@@ -1,0 +1,75 @@
+observatory:
+  name: OMM
+  lat_deg: 45.4554
+  lon_deg: -71.1527
+  elevation_m: 1111.0
+telescope:
+  name: OMM-1.6m
+  diameter_m: 1.6
+  peak_throughput: 0.1
+observation:
+  jd_utc: 2460600.667
+  exposure_s: 1800.0
+  rv_kms: -88.50377
+  exp_s: 900.0
+target:
+  name: Tau Ceti
+  ra_deg: 26.017008
+  dec_deg: -15.937478
+  pmra_masyr: -1721.05
+  pmdec_masyr: 854.16
+  px_mas: 273.96
+  rv_sys_kms: -16.4
+star:
+  R_mag: 3.3
+  vsini_kms: 200.0
+psf_dir: assets/zemax_data/images_fibre_rectangulaire
+xy_table: assets/zemax_data/VROOMM_V04_XY.txt
+output_fits: ./night_output/20261027T220000_barnard_star.fits
+output_png: ./night_output/20261027T220000_barnard_star.png
+wave_step_nm: 0.001
+blaze: true
+spectrum_mode: model
+synthetic:
+  continuum: 1.0
+  line_spacing_nm: 1.0
+  line_fwhm_nm: 0.001
+spectrum_file:
+  path: my_spectrum.dat
+  wave_col: 0
+  flux_col: 1
+model:
+  teff: 12000
+  logg: 4.0
+  cache_dir: assets/spectral_models
+sky:
+  enabled: true
+  R_mag: 19.0
+  scale: 1.0
+  v_fwhm_kms: 1.0
+  cache_dir: assets/spectral_models
+telluric:
+  enabled: true
+  fits_path: assets/LaSilla_tapas.fits
+  airmass: 1.4706
+  water_od: 1.8382
+  cache_dir: assets/spectral_models
+octagonal_fiber:
+  enabled: true
+  psf_dir: assets/zemax_data/images_fibre_octogonale
+  y_offset_pix: -12
+  sky_scale: 1.0
+flatfield:
+  enabled: false
+  rect_fiber: true
+  oct_fiber: true
+  tbb_K: 3000.0
+  R_mag: 10.0
+lamp:
+  enabled: false
+  rect_fiber: false
+  oct_fiber: false
+  type: thar
+  R_mag: 10.0
+  v_fwhm_kms: 0.3
+  cache_dir: assets/spectral_models

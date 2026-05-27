@@ -1,0 +1,27 @@
+# ── Large data assets (fetched/generated at runtime) ─────────────────────────
+# Zemax optical data — PSF images and XY tables
+assets/zemax_data/
+
+# Spectral models — BT-Settl CIFIST grid, TAPAS npy cache, sky OH cache
+assets/spectral_models/*.dat
+assets/spectral_models/*.npy
+
+# TAPAS FITS file (180 MB)
+assets/*.fits
+assets/**/*.fits
+
+# ── Simulation outputs ────────────────────────────────────────────────────────
+detector_sim.fits
+detector_sim.npy
+detector_sim.png
+night_output/
+
+# ── Python cache ──────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ── OS / editor noise ─────────────────────────────────────────────────────────
+.DS_Store
+*.swp
+*.swo
