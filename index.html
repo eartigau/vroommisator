@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VROOMM Simulator Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+
+  <header class="hero">
+    <p class="eyebrow">Instrument Simulation Toolkit</p>
+    <h1>VROOMM</h1>
+    <p class="subtitle">Night planning, physically motivated detector synthesis, and batch execution for spectrograph simulation workflows.</p>
+  </header>
+
+  <main class="layout">
+    <section class="card span-2">
+    <h2>Local Installation</h2>
+      <div class="codeblock">
+  cd vroomm_simu
+  python -m venv .venv
+  source .venv/bin/activate
+
+  pip install numpy scipy pyyaml matplotlib tqdm astropy astroquery barycorrpy pillow
+      </div>
+    <p class="hint">Everything runs locally with plain Python. No web backend required.</p>
+      </section>
+
+      <section class="card span-2">
+    <h2>Daily Workflow (In Practice)</h2>
+    <div class="codeblock">
+  python night_planner.py
+    </div>
+    <p class="hint">The planner drives the observing sequence and launches the runner. This is the only command you normally need.</p>
+    </section>
+
+    <section class="card">
+      <h2>Planner GUI</h2>
+      <div class="image-frame">
+        <img id="guiShot" src="assets/gui_screenshot.png" alt="Night planner screenshot" />
+      </div>
+      <p id="guiShotHint" class="hint">Drop your screenshot at docs/assets/gui_screenshot.png</p>
+    </section>
+
+    <section class="card">
+      <h2>Detector Preview</h2>
+      <div class="image-frame">
+        <img id="detectorPreview" src="assets/detector_sim.png" alt="Detector preview" />
+      </div>
+      <p class="hint">PNG preview is true 2x2 binned and scaled to 0..2xP90.</p>
+    </section>
+
+    <section class="card span-2">
+      <h2>Simulation Summary</h2>
+      <div id="statsGrid" class="stats-grid"></div>
+    </section>
+
+    <section class="card span-2">
+      <h2>Methods</h2>
+      <p class="hint">Auto-extracted from simulate_params.yaml during asset generation.</p>
+      <div id="methodsGrid" class="stats-grid"></div>
+    </section>
+
+    <section class="card span-3">
+      <h2>Mini Lecture: How A 1D Spectrum Becomes A 2D Detector Image</h2>
+      <div class="lecture">
+        <p>
+          This simulator does not draw arbitrary lines on an image. It starts with optical design products from Zemax,
+          then propagates a calibrated spectrum through trace geometry and PSF deposition so every detector pixel receives
+          physically motivated photon counts.
+        </p>
+        <p>
+          The four figures below are generated automatically from your local data and are meant to be read in order.
+          They illustrate the exact sequence used in the code path.
+        </p>
+      </div>
+      <div class="lecture-sections">
+        <section class="lecture-section">
+          <h3>Step 1. Build Detector-Scale PSFs</h3>
+          <p>
+            Input: Zemax PSF stamp (80x80 at 3 um sampling). Operation: true block binning to detector sampling
+            (20x20 at 12 um), with flux conservation. Output: detector-scale PSF kernels ready for sub-pixel placement.
+          </p>
+          <figure class="lecture-figure">
+            <img src="assets/lecture_psf_construction.png" alt="PSF construction" />
+            <figcaption>
+              Legend: Left panel shows original high-resolution Zemax PSF stamps. Right panel shows detector-scale PSFs
+              after 4x4 block binning with conserved flux.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="lecture-section">
+          <h3>Step 2. Trace Geometry From XY Maps</h3>
+          <p>
+            Input: per-order wavelength-position map from the Zemax XY table. Operation: convert mm to detector pixels
+            and construct order centerlines. Output: wavelength-tagged trajectories for each order on detector coordinates.
+          </p>
+          <figure class="lecture-figure">
+            <img src="assets/lecture_trace_map.png" alt="Trace geometry" />
+            <figcaption>
+              Legend: Curves trace echelle orders across detector space. Color progression follows wavelength along each order.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="lecture-section">
+          <h3>Step 3. Spline Interpolation Along The Trace</h3>
+          <p>
+            Input: sparse optical-design samples. Operation: fit cubic splines x(lambda) and y(lambda), then sample at the
+            simulation wavelength step. Output: smooth wavelength to sub-pixel detector mapping.
+          </p>
+          <figure class="lecture-figure">
+            <img src="assets/lecture_spline_sampling.png" alt="Spline interpolation" />
+            <figcaption>
+              Legend: Points are original trace samples; lines are cubic-spline interpolants used to map each wavelength bin
+              to detector coordinates.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="lecture-section">
+          <h3>Step 4. Photon-Conserving 2D Stamp Accumulation</h3>
+          <p>
+            Input: sampled spectral flux, interpolated coordinates, and detector-scale PSF kernels. Operation: shift and add
+            PSF stamps at each wavelength coordinate. Output: final detector frame in photons per pixel.
+          </p>
+          <figure class="lecture-figure">
+            <img src="assets/lecture_image_assembly.png" alt="2D image assembly" />
+            <figcaption>
+              Legend: Final image after accumulation of all wavelength bins and orders; each pixel stores integrated photon counts.
+            </figcaption>
+          </figure>
+        </section>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Transmission Snapshot</h2>
+      <div id="transmissionSummary" class="stats-grid"></div>
+    </section>
+
+    <section class="card">
+      <h2>Key Features</h2>
+      <ul class="feature-list">
+        <li>Science fiber routing with simultaneous sky in both fibers.</li>
+        <li>Wavelength-dependent throughput and adaptive spectral sampling.</li>
+        <li>SIMBAD plus Gaia DR3 target enrichment with per-target overrides.</li>
+        <li>Planner-to-runner pipeline with status-aware execution.</li>
+      </ul>
+    </section>
+
+    <section class="card span-2">
+      <h2>Generated Detector Gallery</h2>
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </section>
+
+    <section class="card span-2">
+      <h2>Build Website Assets</h2>
+      <div class="codeblock">
+python make_webpage_assets.py
+      </div>
+      <p class="hint">This regenerates manifest data, lecture figures, and the detector image gallery for this page.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Generated for the VROOMM simulator workspace.</p>
+  </footer>
+
+  <script src="assets/manifest.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
