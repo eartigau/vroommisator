@@ -4,6 +4,8 @@ Night planning, physically motivated detector synthesis, and batch execution for
 
 This repository is the full local toolkit behind the VROOMM demo website in the docs folder.
 
+![VROOMM planner GUI](docs/assets/gui_screenshot.png)
+
 ## What You Can Do Here
 
 - Build a night plan with calibrations + science targets in a GUI.
@@ -68,6 +70,10 @@ Typical outputs:
 - PNG previews next to FITS outputs
 - Optional root-level detector preview files (detector_sim.fits/.npy/.png)
 
+![Detector preview](docs/assets/detector_sim.png)
+
+![Transmission comparison](docs/assets/compare_transmission_spectra.png)
+
 ## Single-Frame Simulation (Direct)
 
 Run detector synthesis directly from parameter YAML:
@@ -100,6 +106,14 @@ The simulator follows the same 4-step logic shown on the website:
 2. Build order traces from Zemax XY geometry.
 3. Interpolate x(lambda), y(lambda) with cubic splines.
 4. Accumulate shifted PSF stamps in a photon-conserving detector image.
+
+![Step 1: PSF construction](docs/assets/lecture_psf_construction.png)
+
+![Step 2: Trace geometry](docs/assets/lecture_trace_map.png)
+
+![Step 3: Spline interpolation](docs/assets/lecture_spline_sampling.png)
+
+![Step 4: 2D image assembly](docs/assets/lecture_image_assembly.png)
 
 The lecture plots used in docs are generated automatically by make_webpage_assets.py.
 
