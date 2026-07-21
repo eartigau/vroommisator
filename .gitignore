@@ -12,9 +12,11 @@ assets/zemax_data/*
 assets/spectral_models/*.dat
 assets/spectral_models/*.npy
 
-# TAPAS FITS file (180 MB)
+# TAPAS FITS file (180 MB raw). Repo ships assets/LaSilla_tapas.fits.xz
+# (~80 MB); simulate_detector.py auto-extracts it on first run.
 assets/*.fits
 assets/**/*.fits
+!assets/LaSilla_tapas.fits.xz
 
 # ── Simulation outputs ────────────────────────────────────────────────────────
 detector_sim.fits

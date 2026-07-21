@@ -23,6 +23,7 @@ import os
 import re
 import bz2
 import gzip
+import lzma
 import shutil
 import tarfile
 import argparse
@@ -78,12 +79,13 @@ _GAIA_GRP_VOT_URL = "https://svo2.cab.inta-csic.es/theory/fps/fps.php?ID=GAIA/GA
 _GAIA_GRP_CACHE = os.path.join(_HERE, "assets", "transmission", "gaia_grp.vot")
 
 
-def _ensure_zemax_data(path: str) -> str:
+def _ensure_extracted(path: str) -> str:
     """
     Materialise `path` from a co-located compressed archive if it doesn't
-    exist yet on disk. The repo ships the Zemax PSF/XY data as gzip
-    archives (`<dir>.tar.gz`, `<file>.gz`) to keep it small on GitHub;
-    this extracts them next to `path` the first time they're needed.
+    exist yet on disk. Large data files (Zemax PSF/XY tables, TAPAS FITS)
+    are shipped compressed (`<dir>.tar.gz`, `<file>.gz`, `<file>.xz`) to
+    keep the repo small on GitHub; this extracts them next to `path` the
+    first time they're needed.
     """
     if os.path.exists(path):
         return path
@@ -97,6 +99,12 @@ def _ensure_zemax_data(path: str) -> str:
     gz_archive = path + ".gz"
     if os.path.isfile(gz_archive):
         with gzip.open(gz_archive, "rb") as src, open(path, "wb") as dst:
+            shutil.copyfileobj(src, dst)
+        return path
+
+    xz_archive = path + ".xz"
+    if os.path.isfile(xz_archive):
+        with lzma.open(xz_archive, "rb") as src, open(path, "wb") as dst:
             shutil.copyfileobj(src, dst)
         return path
 
@@ -283,7 +291,7 @@ def load_xy_table(path: str = XY_TABLE) -> dict:
         {order_int: [(wave_um, x_mm, y_mm), ...]}
         Rows are in file order (descending wavelength within each order).
     """
-    path = _ensure_zemax_data(path)
+    path = _ensure_extracted(path)
     table: dict = {}
     with open(path) as fh:
         for line in fh:
@@ -360,7 +368,7 @@ class PSFLibrary:
 
     def _load(self, psf_dir: str, order_wave_map: dict) -> None:
         """Discover and load all R*.txt files."""
-        psf_dir = _ensure_zemax_data(psf_dir)
+        psf_dir = _ensure_extracted(psf_dir)
         # Build a fast lookup: (order, N) → wavelength
         wave_lookup: dict = {}
         for order, waves in order_wave_map.items():
@@ -1679,6 +1687,7 @@ def load_tapas_telluric(
         species  = np.load(cache_species)   # shape (N, 6): CO2 CH4 O2 O3 N2O NO2
         h2o      = np.load(os.path.join(cache_dir, "tapas_h2o.npy"))
     else:
+        fits_path = _ensure_extracted(fits_path)
         print(f"  Loading TAPAS file: {fits_path} …")
         from astropy.io import fits as _fits
         with _fits.open(fits_path) as hdul:
