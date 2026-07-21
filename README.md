@@ -168,7 +168,9 @@ This script:
 
 ## Data and Asset Layout
 
-- assets/zemax_data: optical design XY maps and PSF files.
+- assets/zemax_data: optical design XY maps and PSF files. Shipped in the repo as
+  compressed archives (`*.tar.gz`, `VROOMM_V04_XY.txt.gz`) to keep clone size small;
+  simulate_detector.py extracts them automatically on first run.
 - assets/transmission: throughput curves and transmission utilities.
 - assets/targets: per-target cached YAML metadata.
 - docs: static website (index.html, styles.css, app.js, assets).

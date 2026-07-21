@@ -22,6 +22,9 @@ Usage
 import os
 import re
 import bz2
+import gzip
+import shutil
+import tarfile
 import argparse
 import urllib.request
 import urllib.parse
@@ -68,11 +71,36 @@ _HERE        = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR     = os.path.join(_HERE, "assets", "zemax_data")
 XY_TABLE     = os.path.join(DATA_DIR, "VROOMM_V04_XY.txt")
 PSF_DIR_RECT = os.path.join(DATA_DIR, "images_fibre_rectangulaire")
-PSF_DIR_OCT  = os.path.join(DATA_DIR, "images_fibre_octogonale")
+PSF_DIR_OCT  = os.path.join(DATA_DIR, "images_fibre_octogonale_2")
 _TRANSMISSION_CSV = os.path.join(_HERE, "assets", "transmission",
                                  "combined_transmission_spectrum.csv")
 _GAIA_GRP_VOT_URL = "https://svo2.cab.inta-csic.es/theory/fps/fps.php?ID=GAIA/GAIA3.GRP"
 _GAIA_GRP_CACHE = os.path.join(_HERE, "assets", "transmission", "gaia_grp.vot")
+
+
+def _ensure_zemax_data(path: str) -> str:
+    """
+    Materialise `path` from a co-located compressed archive if it doesn't
+    exist yet on disk. The repo ships the Zemax PSF/XY data as gzip
+    archives (`<dir>.tar.gz`, `<file>.gz`) to keep it small on GitHub;
+    this extracts them next to `path` the first time they're needed.
+    """
+    if os.path.exists(path):
+        return path
+
+    tar_archive = path + ".tar.gz"
+    if os.path.isfile(tar_archive):
+        with tarfile.open(tar_archive, "r:gz") as tf:
+            tf.extractall(os.path.dirname(path))
+        return path
+
+    gz_archive = path + ".gz"
+    if os.path.isfile(gz_archive):
+        with gzip.open(gz_archive, "rb") as src, open(path, "wb") as dst:
+            shutil.copyfileobj(src, dst)
+        return path
+
+    return path
 
 # ── wavelength-dependent system transmission ────────────────────────────────
 # combined_transmission_spectrum.csv: back-end optics × front-end × EMCCD QE.
@@ -255,6 +283,7 @@ def load_xy_table(path: str = XY_TABLE) -> dict:
         {order_int: [(wave_um, x_mm, y_mm), ...]}
         Rows are in file order (descending wavelength within each order).
     """
+    path = _ensure_zemax_data(path)
     table: dict = {}
     with open(path) as fh:
         for line in fh:
@@ -331,6 +360,7 @@ class PSFLibrary:
 
     def _load(self, psf_dir: str, order_wave_map: dict) -> None:
         """Discover and load all R*.txt files."""
+        psf_dir = _ensure_zemax_data(psf_dir)
         # Build a fast lookup: (order, N) → wavelength
         wave_lookup: dict = {}
         for order, waves in order_wave_map.items():

@@ -1,6 +1,12 @@
-# ── Large data assets (fetched/generated at runtime) ─────────────────────────
-# Zemax optical data — PSF images and XY tables
-assets/zemax_data/
+# ── Large data assets (fetched/generated at runtime) ──────────────────────────
+# Zemax optical data — PSF images and XY tables.
+# The repo ships compressed archives (*.tar.gz / VROOMM_V04_XY.txt.gz);
+# simulate_detector.py auto-extracts them on first run. Ignore everything
+# else in the directory (raw extracted files, legacy/redundant copies).
+assets/zemax_data/*
+!assets/zemax_data/images_fibre_rectangulaire.tar.gz
+!assets/zemax_data/images_fibre_octogonale_2.tar.gz
+!assets/zemax_data/VROOMM_V04_XY.txt.gz
 
 # Spectral models — BT-Settl CIFIST grid, TAPAS npy cache, sky OH cache
 assets/spectral_models/*.dat

@@ -132,7 +132,7 @@ telluric:
 # Receives sky only; same total throughput as rectangular fiber; offset below.
 octagonal_fiber:
   enabled:      true
-  psf_dir:      assets/zemax_data/images_fibre_octogonale
+  psf_dir:      assets/zemax_data/images_fibre_octogonale_2
   y_offset_pix: -12         # 12 pixels below rectangular fiber
   sky_scale:    1.0         # same absolute sky normalisation as rectangular fiber
 

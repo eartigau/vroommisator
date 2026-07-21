@@ -55,7 +55,7 @@ telluric:
   cache_dir: assets/spectral_models
 octagonal_fiber:
   enabled: true
-  psf_dir: assets/zemax_data/images_fibre_octogonale
+  psf_dir: assets/zemax_data/images_fibre_octogonale_2
   y_offset_pix: -12
   sky_scale: 1.0
 flatfield:
