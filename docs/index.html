@@ -56,6 +56,14 @@
       <p class="hint">PNG preview is true 2x2 binned and scaled to 0..2xP90.</p>
     </section>
 
+    <section class="card">
+      <h2>Perceptual-Color Preview</h2>
+      <div class="image-frame">
+        <img id="detectorColorPreview" src="assets/detector_sim.jpg" alt="Perceptual-color detector preview" />
+      </div>
+      <p class="hint">Hue = wavelength (blue &rarr; red, following the eye's spectral response). Brightness = sqrt(flux), so faint orders stay visible next to bright ones.</p>
+    </section>
+
     <section class="card span-2">
       <h2>Simulation Summary</h2>
       <div id="statsGrid" class="stats-grid"></div>
@@ -144,6 +152,18 @@
     <section class="card">
       <h2>Transmission Snapshot</h2>
       <div id="transmissionSummary" class="stats-grid"></div>
+    </section>
+
+    <section class="card span-2">
+      <h2>Where The Data Comes From</h2>
+      <p class="hint">Everything below is fetched or bundled automatically &mdash; no manual downloads needed to run the simulator.</p>
+      <ul class="feature-list">
+        <li><strong>Zemax optical design</strong> (PSF stamps + order XY maps): bundled in the repo as compressed archives, auto-extracted on first run.</li>
+        <li><strong>BT-Settl CIFIST synthetic spectra</strong>: nearest grid point to the requested Teff/logg fetched live from the SVO theoretical spectra service and cached locally.</li>
+        <li><strong>TAPAS telluric transmission</strong> (per-species H2O/CO2/CH4/O2/O3/N2O/NO2): bundled compressed FITS, auto-extracted on first run.</li>
+        <li><strong>Gaia DR3 / SIMBAD</strong>: queried live for target astrometry, parallax, and photometry during night planning.</li>
+        <li><strong>Sky OH airglow &amp; arc lamp lines</strong>: fetched from ExoMol MoLLIST-OH and NIST ASD, then cached as local line lists.</li>
+      </ul>
     </section>
 
     <section class="card">

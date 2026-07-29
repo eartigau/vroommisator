@@ -39,9 +39,12 @@ try:
 except ImportError:
     yaml = None  # handled at runtime in load_params
 
-# np.trapezoid only exists from NumPy 2.0 on; np.trapz still works on both
-# (deprecated but present in 2.x) so fall back to it on older NumPy.
-_trapezoid = getattr(np, "trapezoid", np.trapz)
+# np.trapezoid only exists from NumPy 2.0 on; np.trapz was removed in later
+# 2.x releases. getattr(np, "trapezoid", np.trapz) is NOT safe here: Python
+# evaluates the default argument eagerly, so `np.trapz` would raise on
+# NumPy versions that dropped it even though trapezoid exists. Use a lazy
+# conditional instead, which only touches the name that's actually present.
+_trapezoid = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
 
 # ── physical constants ─────────────────────────────────────────────────────────
 PIXEL_SIZE_MM   = 0.012   # detector pixel size (12 µm)

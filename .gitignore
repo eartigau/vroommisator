@@ -18,10 +18,12 @@ assets/*.fits
 assets/**/*.fits
 !assets/LaSilla_tapas.fits.xz
 
-# ── Simulation outputs ────────────────────────────────────────────────────────
-detector_sim.fits
-detector_sim.npy
-detector_sim.png
+# ── Simulation outputs (root-level only; docs/assets/ copies are the website's
+#    committed images and must stay tracked) ──────────────────────────────────
+/detector_sim.fits
+/detector_sim.npy
+/detector_sim.png
+/detector_sim.jpg
 night_output/
 
 # ── Python cache ──────────────────────────────────────────────────────────────

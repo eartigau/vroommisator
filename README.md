@@ -3,6 +3,7 @@
 Night planning, physically motivated detector synthesis, and batch execution for spectrograph simulation workflows.
 
 This repository is the full local toolkit behind the VROOMM demo website in the docs folder.
+Live at **https://eartigau.github.io/vroommisator/**.
 
 ![VROOMM planner GUI](docs/assets/gui_screenshot.png)
 

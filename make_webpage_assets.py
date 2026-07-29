@@ -52,16 +52,13 @@ GALLERY_DIR = ASSETS / "gallery"
 COPY_CANDIDATES = [
     "gui_screenshot.png",
     "detector_sim.png",
-    "detector_sim.fits",
-    "detector_sim.npy",
-    "tmp_preview_test.png",
+    "detector_sim.jpg",
     "assets/transmission/compare_transmission_spectra.png",
     "assets/transmission/combined_transmission_spectrum.csv",
 ]
 
 GALLERY_PATTERNS = [
     "detector_sim.png",
-    "tmp_preview_test.png",
     "night_output/**/*.png",
 ]
 
