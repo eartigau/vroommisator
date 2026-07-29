@@ -135,6 +135,89 @@ img {
   height: auto;
 }
 
+.image-frame img,
+.gallery-item img,
+.lecture-figure img {
+  cursor: zoom-in;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.image-frame img:hover,
+.gallery-item img:hover,
+.lecture-figure img:hover {
+  opacity: 0.88;
+}
+
+.gallery-item img:hover {
+  transform: scale(1.03);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 40px 20px;
+  background: rgba(4, 8, 16, 0.92);
+  backdrop-filter: blur(4px);
+  cursor: zoom-out;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox-figure {
+  margin: 0;
+  max-width: min(92vw, 1200px);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: default;
+}
+
+.lightbox-figure img {
+  max-width: 100%;
+  max-height: 76vh;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(143, 176, 220, 0.3);
+  cursor: default;
+}
+
+.lightbox-figure figcaption {
+  color: #d9e6fa;
+  font-size: 0.9rem;
+  text-align: center;
+  max-width: 80ch;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(14, 24, 42, 0.9);
+  color: var(--text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox-close:hover {
+  background: rgba(24, 38, 62, 0.95);
+}
+
 .hint {
   margin: 10px 0 0;
   color: var(--muted);
