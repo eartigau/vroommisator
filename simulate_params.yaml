@@ -67,6 +67,9 @@ xy_table:  assets/zemax_data/VROOMM_V04_XY.txt            # order/wavelength/pos
 # ── output ──────────────────────────────────────────────────────────────────
 output_fits: detector_sim.fits
 output_png:  detector_sim.png
+# Perceptual-color preview: hue = wavelength (blue -> red), brightness =
+# sqrt(flux). Adds an extra wavelength-tracking pass, so left commented out.
+# output_jpg: detector_sim.jpg
 
 # ── wavelength sampling ──────────────────────────────────────────────────────
 # Preferred control: sampling step as a fraction of detector pixel along trace.

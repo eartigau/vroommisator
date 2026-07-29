@@ -68,7 +68,7 @@ python run_night.py
 Typical outputs:
 - FITS detector frames in night_output/YYMMDD/
 - PNG previews next to FITS outputs
-- Optional root-level detector preview files (detector_sim.fits/.npy/.png)
+- Optional root-level detector preview files (detector_sim.fits/.npy/.png/.jpg)
 
 ![Detector preview](docs/assets/detector_sim.png)
 
@@ -97,6 +97,22 @@ python simulate_detector.py \
   --output-png detector_sim.png \
   --wave-step 0.002
 ~~~
+
+### Perceptual-color JPG preview
+
+Add `--output-jpg detector_sim.jpg` (or set `output_jpg` in the params YAML) for
+a true-color-style preview: hue encodes wavelength (blue at the short end
+through green/yellow to red at the long end, following the eye's approximate
+spectral response), and brightness encodes sqrt(flux) so faint orders stay
+visible next to bright ones instead of being drowned out by a linear scale.
+
+~~~bash
+python simulate_detector.py --output-jpg detector_sim.jpg
+~~~
+
+This mode runs an extra wavelength-tracking pass during the simulation, so it
+adds some runtime; it's off by default (`output_jpg` unset in
+simulate_params.yaml).
 
 ## How 1D Spectrum Becomes 2D Detector Image
 

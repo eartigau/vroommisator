@@ -806,10 +806,13 @@ def load_params(path: str = DEFAULT_PARAMS) -> dict:
     xy_table     = _abs(p.get("xy_table",     "assets/zemax_data/VROOMM_V04_XY.txt"))
     output_fits  = p.get("output_fits",  "detector_sim.fits") or None
     output_png   = p.get("output_png",   "detector_sim.png")  or None
+    output_jpg   = p.get("output_jpg",   None) or None
     if output_fits:
         output_fits = _abs(output_fits)
     if output_png:
         output_png  = _abs(output_png)
+    if output_jpg:
+        output_jpg  = _abs(output_jpg)
 
     # ── sampling ───────────────────────────────────────────────────────────
     # Preferred mode: set wave_step_pix_frac in YAML (fraction of 1 pixel).
@@ -1345,6 +1348,7 @@ def load_params(path: str = DEFAULT_PARAMS) -> dict:
         xy_path=xy_table,
         output_fits=output_fits,
         output_png=output_png,
+        output_jpg=output_jpg,
         wave_step_nm=wave_step_nm,
         wave_step_pix_frac=wave_step_pix_frac,
         spectrum_wave=spectrum_wave,
@@ -1738,6 +1742,7 @@ def simulate_detector(
     sky_flux: np.ndarray | None = None,
     sky_scale: float = 0.0,
     y_offset_pix: float = 0.0,
+    track_wavelength: bool = False,
 ) -> np.ndarray:
     """
     Build a 4096×4096 detector image by depositing interpolated PSF stamps
@@ -1787,10 +1792,21 @@ def simulate_detector(
         Shift the entire trace by this many pixels in the cross-dispersion
         (Y) direction.  Positive = up, negative = down.  Used to place the
         octagonal sky-reference fiber below the science fiber.
+    track_wavelength : bool
+        If True, also accumulate a flux-weighted wavelength canvas (nm) so a
+        colorized preview can be built with `_save_color_jpg`.  Changes the
+        return value to a `(detector, wave_accum)` tuple; see Returns below.
 
     Returns
     -------
     np.ndarray  shape (4096, 4096), float64
+        The detector image, if `track_wavelength` is False (default).
+    tuple of (np.ndarray, np.ndarray), both shape (4096, 4096), float64
+        `(detector, wave_accum)` if `track_wavelength` is True.  `wave_accum`
+        holds sum(photons × wavelength_nm) per pixel; divide by `detector`
+        to recover the flux-weighted mean wavelength (nm) — do this after
+        summing contributions from multiple fibers so the average stays
+        flux-weighted across the combination.
     """
     print("Loading XY table …")
     xy_table = load_xy_table(xy_path)
@@ -1827,6 +1843,8 @@ def simulate_detector(
 
     canvas_size = DETECTOR_SIZE + 2 * CANVAS_MARGIN
     detector    = np.zeros((canvas_size, canvas_size), dtype=np.float64)
+    wave_accum  = (np.zeros((canvas_size, canvas_size), dtype=np.float64)
+                   if track_wavelength else None)
     deposited   = 0
     clipped     = 0
 
@@ -1959,6 +1977,8 @@ def simulate_detector(
             psf, _ = _bin_psf(psf)
 
             detector[y0:y1, x0:x1] += stamp_photons * psf
+            if track_wavelength:
+                wave_accum[y0:y1, x0:x1] += stamp_photons * psf * (wave_um * 1000.0)
             deposited += 1
 
     total = deposited + clipped
@@ -1977,6 +1997,11 @@ def simulate_detector(
         CANVAS_MARGIN : CANVAS_MARGIN + DETECTOR_SIZE,
     ]
     detector = np.clip(detector, 0.0, None)  # no negative values in output
+    if track_wavelength:
+        wave_accum = wave_accum[
+            CANVAS_MARGIN : CANVAS_MARGIN + DETECTOR_SIZE,
+            CANVAS_MARGIN : CANVAS_MARGIN + DETECTOR_SIZE,
+        ]
 
     if output_fits:
         _save_fits(detector, output_fits)
@@ -1984,7 +2009,7 @@ def simulate_detector(
     if output_png:
         _save_preview(detector, output_png)
 
-    return detector
+    return (detector, wave_accum) if track_wavelength else detector
 
 
 def _save_fits(
@@ -2071,6 +2096,134 @@ def _save_preview(detector: np.ndarray, path: str) -> None:
     print(f"Saved preview → {path}")
 
 
+def _wavelength_to_rgb(wave_nm: np.ndarray, gamma: float = 0.8) -> np.ndarray:
+    """
+    Approximate the color the human eye perceives for a given wavelength
+    (Bruton 1996 algorithm): violet-blue -> green -> yellow -> red across
+    380-750 nm, fading in intensity near both ends of that range.
+
+    Parameters
+    ----------
+    wave_nm : array_like
+        Wavelength(s) in nm, any shape.
+    gamma : float
+        Perceptual gamma correction (0.8 is the standard value).
+
+    Returns
+    -------
+    np.ndarray  shape wave_nm.shape + (3,)
+        RGB in [0, 1].
+    """
+    w = np.asarray(wave_nm, dtype=np.float64)
+    r = np.zeros_like(w)
+    g = np.zeros_like(w)
+    b = np.zeros_like(w)
+
+    m = (w >= 380) & (w < 440)
+    att = 0.3 + 0.7 * (w[m] - 380) / (440 - 380)
+    r[m] = (-(w[m] - 440) / (440 - 380) * att) ** gamma
+    b[m] = att ** gamma
+
+    m = (w >= 440) & (w < 490)
+    g[m] = ((w[m] - 440) / (490 - 440)) ** gamma
+    b[m] = 1.0
+
+    m = (w >= 490) & (w < 510)
+    g[m] = 1.0
+    b[m] = (-(w[m] - 510) / (510 - 490)) ** gamma
+
+    m = (w >= 510) & (w < 580)
+    r[m] = ((w[m] - 510) / (580 - 510)) ** gamma
+    g[m] = 1.0
+
+    m = (w >= 580) & (w < 645)
+    r[m] = 1.0
+    g[m] = (-(w[m] - 645) / (645 - 580)) ** gamma
+
+    m = (w >= 645) & (w <= 750)
+    att = 0.3 + 0.7 * (750 - w[m]) / (750 - 645)
+    r[m] = att ** gamma
+
+    return np.stack([r, g, b], axis=-1)
+
+
+def _save_color_jpg(detector: np.ndarray, wave_accum: np.ndarray, path: str,
+                     bin_factor: int = 2) -> None:
+    """
+    Save a perceptual-color JPG preview: hue encodes wavelength (blue at
+    the short-wavelength end, gradient through green/yellow to red at the
+    long-wavelength end, using the eye's approximate spectral response),
+    brightness encodes sqrt(flux) so faint orders stay visible next to
+    bright ones.
+
+    `wave_accum` must be the flux-weighted wavelength accumulator (nm) from
+    `simulate_detector(..., track_wavelength=True)`, summed across fibers
+    if applicable, on the same pixel grid as `detector`.
+    """
+    try:
+        from PIL import Image
+    except ImportError:
+        print("  [warn] Pillow not available; skipping color JPG preview")
+        return
+
+    flux = np.clip(detector, 0.0, None)
+
+    # 2x2 (or bin_factor) binning, matching _save_preview: sum sub-pixels so
+    # the wavelength accumulator stays flux-weighted after rebinning.
+    ny, nx = flux.shape
+    ny2, nx2 = (ny // bin_factor) * bin_factor, (nx // bin_factor) * bin_factor
+    flux_b = flux[:ny2, :nx2].reshape(
+        ny2 // bin_factor, bin_factor, nx2 // bin_factor, bin_factor).sum(axis=(1, 3))
+    wave_b = wave_accum[:ny2, :nx2].reshape(
+        ny2 // bin_factor, bin_factor, nx2 // bin_factor, bin_factor).sum(axis=(1, 3))
+
+    pos = flux_b[flux_b > 0.0]
+    vmax = 2.0 * float(np.percentile(pos, 90.0)) if pos.size else 1.0
+    if not np.isfinite(vmax) or vmax <= 0.0:
+        vmax = 1.0
+
+    # PSF stamps are sub-pixel shifted with a cubic spline, which can leave
+    # tiny negative/near-zero ringing artifacts. Dividing wave_b by one of
+    # those near-zero flux_b values would blow up into a nonsense
+    # wavelength, so only trust pixels with a significant flux contribution
+    # (below this they're effectively black anyway, since value ~ 0 there).
+    significant = flux_b > 1e-6 * vmax
+    with np.errstate(divide="ignore", invalid="ignore"):
+        wave_map = np.where(significant, wave_b / flux_b, np.nan)
+    # Physical safety net: instrument wavelengths only ever fall in this
+    # range, so anything outside it is leftover numerical noise.
+    wave_map = np.where((wave_map >= 200.0) & (wave_map <= 2000.0), wave_map, np.nan)
+
+    finite = wave_map[np.isfinite(wave_map)]
+    if finite.size:
+        # Robust (percentile, not min/max) range: a handful of pixels can
+        # still carry noisy wavelengths from the significance/physical
+        # filtering above, and raw min/max would let those single outliers
+        # skew the whole blue->red scaling.
+        wave_lo, wave_hi = np.percentile(finite, [0.5, 99.5])
+        wave_lo, wave_hi = float(wave_lo), float(wave_hi)
+    else:
+        wave_lo, wave_hi = 400.0, 700.0
+    if wave_hi <= wave_lo:
+        wave_hi = wave_lo + 1.0
+
+    # Rescale the instrument's actual wavelength range onto the visible
+    # 380-750 nm range so the full spectrum (including near-IR orders)
+    # shows as a blue -> red gradient instead of fading to black.
+    virtual_wave = 380.0 + (np.nan_to_num(wave_map, nan=wave_lo) - wave_lo) \
+                   / (wave_hi - wave_lo) * (750.0 - 380.0)
+    hue_rgb = _wavelength_to_rgb(virtual_wave)
+
+    value = np.sqrt(np.clip(flux_b / vmax, 0.0, 1.0))
+
+    rgb = np.clip(hue_rgb * value[..., None], 0.0, 1.0)
+    img_u8 = (rgb * 255.0 + 0.5).astype(np.uint8)
+    img_u8 = img_u8[::-1, :, :]   # origin="lower" convention, as in _save_preview
+
+    Image.fromarray(img_u8, mode="RGB").save(path, format="JPEG", quality=95)
+    print(f"Saved color JPG → {path}  (λ {wave_lo:.0f}–{wave_hi:.0f} nm mapped blue→red)")
+
+
 # ── CLI ────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
@@ -2088,6 +2241,9 @@ if __name__ == "__main__":
     parser.add_argument("--xy-table",    default=None, help="Override xy_table")
     parser.add_argument("--output-fits", default=None, help="Override output_fits ('' to skip)")
     parser.add_argument("--output-png",  default=None, help="Override output_png  ('' to skip)")
+    parser.add_argument("--output-jpg",  default=None,
+                        help="Override output_jpg ('' to skip). Perceptual-color "
+                             "preview: hue = wavelength (blue→red), brightness = sqrt(flux).")
     parser.add_argument("--wave-step",   default=None, type=float, metavar="NM",
                         help="Override wave_step_nm [nm]")
     args = parser.parse_args()
@@ -2098,17 +2254,22 @@ if __name__ == "__main__":
     if args.xy_table    is not None: kwargs["xy_path"]       = args.xy_table
     if args.output_fits is not None: kwargs["output_fits"]   = args.output_fits or None
     if args.output_png  is not None: kwargs["output_png"]    = args.output_png  or None
+    if args.output_jpg  is not None: kwargs["output_jpg"]    = args.output_jpg  or None
     if args.wave_step   is not None: kwargs["wave_step_nm"]  = args.wave_step
 
     oct_conf    = kwargs.pop("oct_conf",  None)
     fits_meta   = kwargs.pop("fits_meta", None)
     output_fits = kwargs.get("output_fits")
     output_png  = kwargs.get("output_png")
+    output_jpg  = kwargs.pop("output_jpg", None)
+    track_wave  = bool(output_jpg)
 
     if oct_conf is not None:
         # Dual-fiber mode: simulate each fiber without saving, then combine.
         print("\n── Rectangular fiber (star + sky) ──────────────────────────────")
-        img = simulate_detector(**{**kwargs, "output_fits": None, "output_png": None})
+        result = simulate_detector(**{**kwargs, "output_fits": None, "output_png": None,
+                                       "track_wavelength": track_wave})
+        img, wave_accum = result if track_wave else (result, None)
 
         oct_mode = ("lamp" if oct_conf.get("spectrum_wave") is not None
                     else "sky only")
@@ -2127,22 +2288,32 @@ if __name__ == "__main__":
             sky_flux     = oct_conf.get("sky_flux"),
             sky_scale    = oct_conf["sky_scale"],
             y_offset_pix = oct_conf["y_offset_pix"],
+            track_wavelength = track_wave,
         )
-        img_oct = simulate_detector(**oct_kwargs)
+        result_oct = simulate_detector(**oct_kwargs)
+        img_oct, wave_accum_oct = result_oct if track_wave else (result_oct, None)
 
         print("\nCombining rectangular + octagonal fiber images …")
         img = img + img_oct
+        if track_wave:
+            wave_accum = wave_accum + wave_accum_oct
         if output_fits:
             _save_fits(img, output_fits, fits_meta)
         if output_png:
             _save_preview(img, output_png)
+        if output_jpg:
+            _save_color_jpg(img, wave_accum, output_jpg)
     else:
         # Single-fiber mode: suppress internal save so we can write with metadata.
-        img = simulate_detector(**{**kwargs, "output_fits": None, "output_png": None})
+        result = simulate_detector(**{**kwargs, "output_fits": None, "output_png": None,
+                                       "track_wavelength": track_wave})
+        img, wave_accum = result if track_wave else (result, None)
         if output_fits:
             _save_fits(img, output_fits, fits_meta)
         if output_png:
             _save_preview(img, output_png)
+        if output_jpg:
+            _save_color_jpg(img, wave_accum, output_jpg)
 
     print(
         f"\nDetector stats:"
