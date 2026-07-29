@@ -9,6 +9,13 @@ function fmtNumber(value) {
   return num.toFixed(4);
 }
 
+function fmtSeconds(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return "n/a";
+  }
+  return `${Math.round(Number(value))} s`;
+}
+
 function addStat(container, label, value) {
   const card = document.createElement("div");
   card.className = "stat";
@@ -50,15 +57,38 @@ async function loadManifest() {
     }
 
     const d = m.detector_stats || {};
-    const npy = d.npy || null;
     const fits = d.fits || null;
+    const statsIntro = document.getElementById("statsIntro");
 
-    addStat(statsGrid, "Copied assets", String((m.copied_assets || []).length));
-    addStat(statsGrid, "NPY shape", npy ? String(npy.shape) : "n/a");
-    addStat(statsGrid, "NPY p90", npy ? fmtNumber(npy.p90) : "n/a");
-    addStat(statsGrid, "NPY p99", npy ? fmtNumber(npy.p99) : "n/a");
-    addStat(statsGrid, "FITS shape", fits ? String(fits.shape) : "n/a");
-    addStat(statsGrid, "FITS max", fits ? fmtNumber(fits.max) : "n/a");
+    if (fits) {
+      const [ny, nx] = fits.shape || [];
+      addStat(statsGrid, "Detector size", ny && nx ? `${ny} × ${nx} px` : "n/a");
+      addStat(statsGrid, "Total detected photons", fmtNumber(fits.sum));
+      addStat(statsGrid, "Peak photons / pixel", fmtNumber(fits.max));
+      addStat(statsGrid, "Illuminated pixels",
+        fits.illuminated_frac != null ? `${(fits.illuminated_frac * 100).toFixed(1)}%` : "n/a");
+      addStat(statsGrid, "p90 among lit pixels", fmtNumber(fits.p90));
+      addStat(statsGrid, "p99 among lit pixels", fmtNumber(fits.p99));
+    } else {
+      addStat(statsGrid, "Detector stats", "n/a — run simulate_detector.py first");
+    }
+
+    if (statsIntro) {
+      const src = (m.methods || {}).source || {};
+      const obsv = (m.methods || {}).observation || {};
+      const env = (m.methods || {}).environment || {};
+      if (fits && (m.methods && !m.methods.error)) {
+        statsIntro.textContent =
+          `This is a single simulated exposure: a Teff=${src.model_teff ?? "?"} K, ` +
+          `${fmtNumber(src.star_mag)} mag (${(src.star_mag_band || "R").toUpperCase()}) star, ` +
+          `${fmtSeconds(obsv.exposure_s)} exposure` +
+          (env.sky_enabled ? ", sky emission on" : "") +
+          (env.telluric_enabled ? `, telluric absorption at airmass ${fmtNumber(env.telluric_airmass)}` : "") +
+          ". Numbers below describe the resulting 4096×4096 photon-count image.";
+      } else {
+        statsIntro.textContent = "Run simulate_detector.py then python make_webpage_assets.py to populate this section.";
+      }
+    }
 
     const t = m.transmission_summary || {};
     if (t.error) {
@@ -86,6 +116,7 @@ async function loadManifest() {
       addStat(methodsGrid, "Coordinates", `${fmtNumber(obs.lat_deg)}, ${fmtNumber(obs.lon_deg)}`);
       addStat(methodsGrid, "Telescope", `${tel.name || "n/a"} (${fmtNumber(tel.diameter_m)} m)`);
       addStat(methodsGrid, "Peak throughput", fmtNumber(tel.peak_throughput));
+      addStat(methodsGrid, "Exposure", fmtSeconds((meth.observation || {}).exposure_s));
       addStat(methodsGrid, "Spectrum mode", src.spectrum_mode || "n/a");
       addStat(methodsGrid, "Stellar model", `Teff=${src.model_teff ?? "n/a"}, logg=${src.model_logg ?? "n/a"}`);
       addStat(methodsGrid, "Magnitude", `${fmtNumber(src.star_mag)} (${(src.star_mag_band || "R").toUpperCase()})`);

@@ -88,38 +88,40 @@ def copy_if_exists(src_rel: str) -> dict[str, Any] | None:
 
 
 def percentile_stats(arr: np.ndarray) -> dict[str, Any]:
+    """
+    Summarize a (mostly-empty) detector image.
+
+    Percentiles are computed over illuminated (nonzero, finite) pixels only:
+    with ~90%+ of a detector frame being background, whole-array percentiles
+    are almost always 0 and tell a website visitor nothing. `illuminated_frac`
+    reports what fraction of the frame that excludes.
+    """
     arr = np.asarray(arr, dtype=float)
     finite = arr[np.isfinite(arr)]
     if finite.size == 0:
         return {
             "shape": list(arr.shape),
-            "min": None,
+            "sum": None,
             "max": None,
             "p50": None,
             "p90": None,
             "p99": None,
+            "illuminated_frac": None,
         }
+    lit = finite[finite > 0]
     return {
         "shape": list(arr.shape),
-        "min": float(np.min(finite)),
+        "sum": float(np.sum(finite)),
         "max": float(np.max(finite)),
-        "p50": float(np.percentile(finite, 50)),
-        "p90": float(np.percentile(finite, 90)),
-        "p99": float(np.percentile(finite, 99)),
+        "p50": float(np.percentile(lit, 50)) if lit.size else 0.0,
+        "p90": float(np.percentile(lit, 90)) if lit.size else 0.0,
+        "p99": float(np.percentile(lit, 99)) if lit.size else 0.0,
+        "illuminated_frac": float(lit.size) / float(finite.size),
     }
 
 
 def read_detector_stats() -> dict[str, Any]:
     stats: dict[str, Any] = {}
-
-    npy_path = ROOT / "detector_sim.npy"
-    if npy_path.exists():
-        try:
-            arr = np.load(npy_path)
-            stats["npy"] = percentile_stats(arr)
-            stats["npy"]["path"] = safe_rel(npy_path)
-        except Exception as exc:
-            stats["npy_error"] = str(exc)
 
     fits_path = ROOT / "detector_sim.fits"
     if fits_path.exists():
