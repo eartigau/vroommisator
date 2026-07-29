@@ -39,6 +39,10 @@ try:
 except ImportError:
     yaml = None  # handled at runtime in load_params
 
+# np.trapezoid only exists from NumPy 2.0 on; np.trapz still works on both
+# (deprecated but present in 2.x) so fall back to it on older NumPy.
+_trapezoid = getattr(np, "trapezoid", np.trapz)
+
 # ── physical constants ─────────────────────────────────────────────────────────
 PIXEL_SIZE_MM   = 0.012   # detector pixel size (12 µm)
 
@@ -907,8 +911,8 @@ def load_params(path: str = DEFAULT_PARAMS) -> dict:
                 t_interp = np.interp(spectrum_wave, grp_w, grp_t, left=0.0, right=0.0)
                 if np.count_nonzero(t_interp > 0.0) < 2:
                     raise ValueError("Spectrum does not overlap Gaia RP throughput support.")
-                model_band_erg = np.trapezoid(spectrum_flux * t_interp, spectrum_wave * 10.0)
-                vega_band_erg  = _VEGA_F_LAM_GRP * np.trapezoid(grp_t, grp_w * 10.0)
+                model_band_erg = _trapezoid(spectrum_flux * t_interp, spectrum_wave * 10.0)
+                vega_band_erg  = _VEGA_F_LAM_GRP * _trapezoid(grp_t, grp_w * 10.0)
                 erg_scale = vega_band_erg * 10.0 ** (-star_mag / 2.5) / model_band_erg
                 calib_name = "GaiaRP"
             except Exception as exc:
@@ -918,7 +922,7 @@ def load_params(path: str = DEFAULT_PARAMS) -> dict:
                     raise ValueError(
                         f"Input spectrum does not cover R band ({_R_BAND_MIN}–{_R_BAND_MAX} nm)."
                     )
-                model_R_erg = np.trapezoid(spectrum_flux[mask_R], spectrum_wave[mask_R] * 10.0)
+                model_R_erg = _trapezoid(spectrum_flux[mask_R], spectrum_wave[mask_R] * 10.0)
                 vega_R_erg  = _VEGA_F_LAM_R * (_R_BAND_MAX - _R_BAND_MIN) * 10.0
                 erg_scale   = vega_R_erg * 10.0 ** (-star_mag / 2.5) / model_R_erg
         else:
@@ -927,7 +931,7 @@ def load_params(path: str = DEFAULT_PARAMS) -> dict:
                 raise ValueError(
                     f"Input spectrum does not cover R band ({_R_BAND_MIN}–{_R_BAND_MAX} nm)."
                 )
-            model_R_erg = np.trapezoid(spectrum_flux[mask_R], spectrum_wave[mask_R] * 10.0)
+            model_R_erg = _trapezoid(spectrum_flux[mask_R], spectrum_wave[mask_R] * 10.0)
             vega_R_erg  = _VEGA_F_LAM_R * (_R_BAND_MAX - _R_BAND_MIN) * 10.0
             erg_scale   = vega_R_erg * 10.0 ** (-star_mag / 2.5) / model_R_erg
         # Convert erg/cm²/s/Å → photons/nm at detector, for the full exposure:
@@ -964,7 +968,7 @@ def load_params(path: str = DEFAULT_PARAMS) -> dict:
         if modulation is not None:
             fr_raw = fr_raw * modulation(fw)
         mask_R    = (fw >= _R_BAND_MIN) & (fw <= _R_BAND_MAX)
-        R_erg     = np.trapezoid(fr_raw[mask_R], fw[mask_R] * 10.0)
+        R_erg     = _trapezoid(fr_raw[mask_R], fw[mask_R] * 10.0)
         vR_erg    = _VEGA_F_LAM_R * (_R_BAND_MAX - _R_BAND_MIN) * 10.0
         scale     = vR_erg * 10.0 ** (-r_mag / 2.5) / R_erg
         T_cs      = _get_transmission_spline()
@@ -1158,7 +1162,7 @@ def load_params(path: str = DEFAULT_PARAMS) -> dict:
             fr_raw = _blackbody_nm(fw, lamp_fp_tbb_K) * fp_mod
 
             mask_R = (fw >= _R_BAND_MIN) & (fw <= _R_BAND_MAX)
-            R_erg  = np.trapezoid(fr_raw[mask_R], fw[mask_R] * 10.0)
+            R_erg  = _trapezoid(fr_raw[mask_R], fw[mask_R] * 10.0)
             vR_erg = _VEGA_F_LAM_R * (_R_BAND_MAX - _R_BAND_MIN) * 10.0
             scale  = vR_erg * 10.0 ** (-r_mag / 2.5) / max(R_erg, 1e-30)
             ff = (fr_raw * scale * 10.0
