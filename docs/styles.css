@@ -55,6 +55,31 @@ body {
   bottom: -140px;
 }
 
+.topbar {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 18px 20px 0;
+}
+
+.home-link {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  backdrop-filter: blur(8px);
+}
+
+.home-link:hover {
+  color: var(--accent);
+  border-color: rgba(98, 194, 255, 0.4);
+  text-decoration: none;
+}
+
 .hero {
   max-width: 1180px;
   margin: 0 auto;
