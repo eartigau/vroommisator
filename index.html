@@ -20,24 +20,49 @@
   </header>
 
   <main class="layout">
+    <section class="card span-3">
+      <h2>How The Project Is Organized</h2>
+      <p class="hint">
+        Five plain-Python files cover the whole pipeline, from GUI to physics engine to this website.
+        Data flow: <strong>night_planner.py</strong> (build a night) &rarr; <strong>run_night.py</strong>
+        (walk the sequence) &rarr; <strong>simulate_detector.py</strong> (one physics run per exposure)
+        &rarr; FITS/PNG/JPG frames in <strong>night_output/</strong>.
+      </p>
+      <ul class="feature-list">
+        <li><strong>night_planner.py</strong> &mdash; GUI entry point. Builds a night's observing sequence (calibrations + science targets), enriches targets via SIMBAD/Gaia DR3, and launches the runner.</li>
+        <li><strong>run_night.py</strong> &mdash; batch execution engine. Walks the planned sequence exposure by exposure, calls the physics engine for each one, and shows live progress.</li>
+        <li><strong>simulate_detector.py</strong> &mdash; the physics core. Turns a 1D spectrum into a 2D detector image via the PSF / trace-geometry / spline pipeline described below; also runnable standalone from the command line.</li>
+        <li><strong>simulate_params.yaml</strong> &mdash; central configuration for a single simulate_detector.py run: telescope, target, spectrum model, sky, telluric absorption, fiber setup.</li>
+        <li><strong>make_webpage_assets.py</strong> &mdash; builds this website: copies preview images, computes the stats below, and regenerates the mini-lecture figures.</li>
+        <li><strong>assets/</strong> &mdash; bundled and auto-fetched data (Zemax optical design, TAPAS telluric transmission, throughput curves, cached spectral models). See &ldquo;Where The Data Comes From&rdquo; below.</li>
+      </ul>
+    </section>
+
     <section class="card span-2">
     <h2>Local Installation</h2>
       <div class="codeblock">
-  cd vroomm_simu
+  git clone https://github.com/eartigau/vroommisator.git
+  cd vroommisator
+
   python -m venv .venv
   source .venv/bin/activate
 
   pip install numpy scipy pyyaml matplotlib tqdm astropy astroquery barycorrpy pillow
       </div>
-    <p class="hint">Everything runs locally with plain Python. No web backend required.</p>
+    <p class="hint">
+      Clone the repository, create an isolated virtual environment so these dependencies don't collide with
+      anything else on your system, activate it, then install the required packages. Everything else (Zemax
+      optical data, telluric transmission) is bundled in the repo as compressed archives and auto-extracts on
+      first run &mdash; no separate download step. Runs entirely locally with plain Python; no web backend required.
+    </p>
       </section>
 
-      <section class="card span-2">
+      <section class="card">
     <h2>Daily Workflow (In Practice)</h2>
     <div class="codeblock">
   python night_planner.py
     </div>
-    <p class="hint">The planner drives the observing sequence and launches the runner. This is the only command you normally need.</p>
+    <p class="hint">The planner drives the observing sequence and launches the runner. This is the only command you normally need day-to-day.</p>
     </section>
 
     <section class="card">
@@ -66,6 +91,7 @@
 
     <section class="card span-2">
       <h2>Simulation Summary</h2>
+      <p id="statsIntro" class="hint"></p>
       <div id="statsGrid" class="stats-grid"></div>
     </section>
 
