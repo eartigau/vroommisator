@@ -6,28 +6,14 @@
       "source": "detector_sim.png",
       "dest": "docs/assets/detector_sim.png",
       "web_path": "assets/detector_sim.png",
-      "bytes": 886723
+      "bytes": 918875
     },
     {
-      "name": "detector_sim.fits",
-      "source": "detector_sim.fits",
-      "dest": "docs/assets/detector_sim.fits",
-      "web_path": "assets/detector_sim.fits",
-      "bytes": 67115520
-    },
-    {
-      "name": "detector_sim.npy",
-      "source": "detector_sim.npy",
-      "dest": "docs/assets/detector_sim.npy",
-      "web_path": "assets/detector_sim.npy",
-      "bytes": 134217856
-    },
-    {
-      "name": "tmp_preview_test.png",
-      "source": "tmp_preview_test.png",
-      "dest": "docs/assets/tmp_preview_test.png",
-      "web_path": "assets/tmp_preview_test.png",
-      "bytes": 48078
+      "name": "detector_sim.jpg",
+      "source": "detector_sim.jpg",
+      "dest": "docs/assets/detector_sim.jpg",
+      "web_path": "assets/detector_sim.jpg",
+      "bytes": 981390
     },
     {
       "name": "compare_transmission_spectra.png",
@@ -46,81 +32,81 @@
   ],
   "gallery": [
     {
+      "title": "detector_sim.png",
+      "source": "detector_sim.png",
+      "dest": "docs/assets/gallery/01_detector_sim.png",
+      "web_path": "assets/gallery/01_detector_sim.png",
+      "bytes": 918875
+    },
+    {
+      "title": "20260527T220000_FP.png",
+      "source": "night_output/260527/20260527T220000_FP.png",
+      "dest": "docs/assets/gallery/02_20260527T220000_FP.png",
+      "web_path": "assets/gallery/02_20260527T220000_FP.png",
+      "bytes": 1834062
+    },
+    {
       "title": "20261027T220000_FP.png",
       "source": "night_output/261027/20261027T220000_FP.png",
-      "dest": "docs/assets/gallery/01_20261027T220000_FP.png",
-      "web_path": "assets/gallery/01_20261027T220000_FP.png",
+      "dest": "docs/assets/gallery/03_20261027T220000_FP.png",
+      "web_path": "assets/gallery/03_20261027T220000_FP.png",
       "bytes": 1258026
     },
     {
       "title": "20260727T221800_HD_173739.png",
       "source": "night_output/260727/20260727T221800_HD_173739.png",
-      "dest": "docs/assets/gallery/02_20260727T221800_HD_173739.png",
-      "web_path": "assets/gallery/02_20260727T221800_HD_173739.png",
+      "dest": "docs/assets/gallery/04_20260727T221800_HD_173739.png",
+      "web_path": "assets/gallery/04_20260727T221800_HD_173739.png",
       "bytes": 1109212
     },
     {
       "title": "20260727T220230_iota_Cyg.png",
       "source": "night_output/260727/20260727T220230_iota_Cyg.png",
-      "dest": "docs/assets/gallery/03_20260727T220230_iota_Cyg.png",
-      "web_path": "assets/gallery/03_20260727T220230_iota_Cyg.png",
+      "dest": "docs/assets/gallery/05_20260727T220230_iota_Cyg.png",
+      "web_path": "assets/gallery/05_20260727T220230_iota_Cyg.png",
       "bytes": 916198
     },
     {
       "title": "20260727T220100_UNE.png",
       "source": "night_output/260727/20260727T220100_UNE.png",
-      "dest": "docs/assets/gallery/04_20260727T220100_UNE.png",
-      "web_path": "assets/gallery/04_20260727T220100_UNE.png",
+      "dest": "docs/assets/gallery/06_20260727T220100_UNE.png",
+      "web_path": "assets/gallery/06_20260727T220100_UNE.png",
       "bytes": 120470
     },
     {
       "title": "20260727T220000_FLAT.png",
       "source": "night_output/260727/20260727T220000_FLAT.png",
-      "dest": "docs/assets/gallery/05_20260727T220000_FLAT.png",
-      "web_path": "assets/gallery/05_20260727T220000_FLAT.png",
+      "dest": "docs/assets/gallery/07_20260727T220000_FLAT.png",
+      "web_path": "assets/gallery/07_20260727T220000_FLAT.png",
       "bytes": 1172407
     },
     {
       "title": "20260805T051530_CHI_CAP.png",
       "source": "night_output/260805/20260805T051530_CHI_CAP.png",
-      "dest": "docs/assets/gallery/06_20260805T051530_CHI_CAP.png",
-      "web_path": "assets/gallery/06_20260805T051530_CHI_CAP.png",
+      "dest": "docs/assets/gallery/08_20260805T051530_CHI_CAP.png",
+      "web_path": "assets/gallery/08_20260805T051530_CHI_CAP.png",
       "bytes": 1514351
-    },
-    {
-      "title": "tmp_preview_test.png",
-      "source": "tmp_preview_test.png",
-      "dest": "docs/assets/gallery/07_tmp_preview_test.png",
-      "web_path": "assets/gallery/07_tmp_preview_test.png",
-      "bytes": 48078
     },
     {
       "title": "20260805T050000_trappist-1.png",
       "source": "night_output/260805/20260805T050000_trappist-1.png",
-      "dest": "docs/assets/gallery/08_20260805T050000_trappist-1.png",
-      "web_path": "assets/gallery/08_20260805T050000_trappist-1.png",
+      "dest": "docs/assets/gallery/09_20260805T050000_trappist-1.png",
+      "web_path": "assets/gallery/09_20260805T050000_trappist-1.png",
       "bytes": 134153
     },
     {
       "title": "20260905T050000_trappist-1.png",
       "source": "night_output/260905/20260905T050000_trappist-1.png",
-      "dest": "docs/assets/gallery/09_20260905T050000_trappist-1.png",
-      "web_path": "assets/gallery/09_20260905T050000_trappist-1.png",
+      "dest": "docs/assets/gallery/10_20260905T050000_trappist-1.png",
+      "web_path": "assets/gallery/10_20260905T050000_trappist-1.png",
       "bytes": 134415
     },
     {
       "title": "20261027T220000_Barnard_star.png",
       "source": "night_output/261027/20261027T220000_Barnard_star.png",
-      "dest": "docs/assets/gallery/10_20261027T220000_Barnard_star.png",
-      "web_path": "assets/gallery/10_20261027T220000_Barnard_star.png",
+      "dest": "docs/assets/gallery/11_20261027T220000_Barnard_star.png",
+      "web_path": "assets/gallery/11_20261027T220000_Barnard_star.png",
       "bytes": 1321045
-    },
-    {
-      "title": "detector_sim.png",
-      "source": "detector_sim.png",
-      "dest": "docs/assets/gallery/11_detector_sim.png",
-      "web_path": "assets/gallery/11_detector_sim.png",
-      "bytes": 886723
     }
   ],
   "lecture_plots": [
@@ -128,25 +114,25 @@
       "title": "PSF construction",
       "dest": "docs/assets/lecture_psf_construction.png",
       "web_path": "assets/lecture_psf_construction.png",
-      "bytes": 45295
+      "bytes": 47784
     },
     {
       "title": "Trace geometry",
       "dest": "docs/assets/lecture_trace_map.png",
       "web_path": "assets/lecture_trace_map.png",
-      "bytes": 91478
+      "bytes": 91003
     },
     {
       "title": "Spline interpolation",
       "dest": "docs/assets/lecture_spline_sampling.png",
       "web_path": "assets/lecture_spline_sampling.png",
-      "bytes": 79501
+      "bytes": 92400
     },
     {
       "title": "2D image assembly",
       "dest": "docs/assets/lecture_image_assembly.png",
       "web_path": "assets/lecture_image_assembly.png",
-      "bytes": 120118
+      "bytes": 132983
     }
   ],
   "detector_stats": {
@@ -168,10 +154,10 @@
         4096
       ],
       "min": 0.0,
-      "max": 1590484.75,
-      "p50": 5.205602246860508e-05,
-      "p90": 763405.09375,
-      "p99": 1430518.98125,
+      "max": 1747691.125,
+      "p50": 4.868550968240015e-05,
+      "p90": 761125.53125,
+      "p99": 1459298.2249999996,
       "path": "detector_sim.fits"
     }
   },
