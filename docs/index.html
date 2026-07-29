@@ -70,7 +70,12 @@
       <div class="image-frame">
         <img id="guiShot" src="assets/gui_screenshot.png" alt="Night planner screenshot" />
       </div>
-      <p id="guiShotHint" class="hint">Drop your screenshot at docs/assets/gui_screenshot.png</p>
+      <p id="guiShotHint" class="hint">
+        night_planner.py's main window. Build the night's sequence with +Calibration/+Science/+Slew/+Delay,
+        reorder or delete steps, then Recompute BERV+AM before hitting Run Night. Each row tracks its own
+        RA/Dec, systemic RV, BERV, airmass, fiber routing, and status live as run_night.py executes it;
+        Export YAML saves the sequence to replay later.
+      </p>
     </section>
 
     <section class="card">
@@ -206,18 +211,16 @@
       <h2>Generated Detector Gallery</h2>
       <div id="galleryGrid" class="gallery-grid"></div>
     </section>
-
-    <section class="card span-2">
-      <h2>Build Website Assets</h2>
-      <div class="codeblock">
-python make_webpage_assets.py
-      </div>
-      <p class="hint">This regenerates manifest data, lecture figures, and the detector image gallery for this page.</p>
-    </section>
   </main>
 
   <footer class="footer">
-    <p>Generated for the VROOMM simulator workspace.</p>
+    <p>
+      <a href="https://github.com/eartigau/vroommisator" target="_blank">Source on GitHub</a>
+      &middot;
+      <a href="https://eartigau.github.io/" target="_blank">More tools</a>
+      &middot;
+      Generated for the VROOMM simulator workspace.
+    </p>
   </footer>
 
   <script src="assets/manifest.js"></script>

@@ -12,6 +12,15 @@
   box-sizing: border-box;
 }
 
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 body {
   margin: 0;
   color: var(--text);
