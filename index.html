@@ -4,6 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VROOMM Simulator Documentation</title>
+  <script>
+    (function () {
+      var stored = null;
+      try { stored = localStorage.getItem('vroommisator_lang'); } catch (e) {}
+      var lang = stored || (navigator.language || 'en').toLowerCase();
+      var html = document.documentElement;
+      if (lang.indexOf('fr') === 0) {
+        html.lang = 'fr';
+        html.classList.add('lang-fr');
+      } else {
+        html.lang = 'en';
+        html.classList.add('lang-en');
+      }
+    })();
+    function toggleLang() {
+      var html = document.documentElement;
+      var next = html.classList.contains('lang-fr') ? 'en' : 'fr';
+      html.classList.remove('lang-en', 'lang-fr');
+      html.classList.add('lang-' + next);
+      html.lang = next;
+      try { localStorage.setItem('vroommisator_lang', next); } catch (e) {}
+      document.getElementById('langBtn').textContent = next === 'fr' ? 'EN' : 'FR';
+      if (window.renderManifest) { window.renderManifest(); }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('langBtn').textContent =
+        document.documentElement.classList.contains('lang-fr') ? 'EN' : 'FR';
+    });
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,7 +44,8 @@
 
   <div class="topbar">
     <a href="https://github.com/eartigau/vroommisator" class="home-link" target="_blank">GitHub</a>
-    <a href="https://eartigau.github.io/" class="home-link">&larr; Home</a>
+    <a href="https://eartigau.github.io/#outils" class="home-link">&larr; Home</a>
+    <button id="langBtn" class="home-link" type="button" onclick="toggleLang()">FR</button>
   </div>
 
   <div class="shell">
@@ -24,58 +54,85 @@
         <img src="assets/vroomm_logo.png" alt="VROOMM logo" />
         <span>VROOMM Simulator</span>
       </div>
-      <div class="sidebar-sub">Night planning &amp; 2D detector synthesis &middot; OMM 1.6-m</div>
+      <div class="sidebar-sub">
+        <span class="en">Night planning &amp; 2D detector synthesis &middot; OMM 1.6-m</span>
+        <span class="fr">Planification de nuit et synth&egrave;se d'image 2D &middot; OMM 1,6&nbsp;m</span>
+      </div>
 
-      <span class="nav-label">Overview</span>
-      <a class="nav-link" href="#organization">How it's organized</a>
-      <a class="nav-link" href="#install">Local installation</a>
-      <a class="nav-link" href="#workflow">Daily workflow</a>
+      <span class="nav-label en">Overview</span>
+      <span class="nav-label fr">Aper&ccedil;u</span>
+      <a class="nav-link" href="#organization"><span class="en">How it's organized</span><span class="fr">Organisation du projet</span></a>
+      <a class="nav-link" href="#install"><span class="en">Local installation</span><span class="fr">Installation locale</span></a>
+      <a class="nav-link" href="#workflow"><span class="en">Daily workflow</span><span class="fr">Utilisation quotidienne</span></a>
 
-      <span class="nav-label">Preview</span>
-      <a class="nav-link" href="#planner-gui">Planner GUI</a>
-      <a class="nav-link" href="#detector-preview">Detector preview</a>
-      <a class="nav-link" href="#color-preview">Perceptual-color preview</a>
+      <span class="nav-label en">Preview</span>
+      <span class="nav-label fr">Visualisation</span>
+      <a class="nav-link" href="#planner-gui"><span class="en">Planner GUI</span><span class="fr">Interface du planificateur</span></a>
+      <a class="nav-link" href="#detector-preview"><span class="en">Detector preview</span><span class="fr">Aper&ccedil;u d&eacute;tecteur</span></a>
+      <a class="nav-link" href="#color-preview"><span class="en">Perceptual-color preview</span><span class="fr">Aper&ccedil;u en couleurs perceptuelles</span></a>
 
-      <span class="nav-label">Results</span>
-      <a class="nav-link" href="#summary">Simulation summary</a>
-      <a class="nav-link" href="#methods">Methods</a>
-      <a class="nav-link" href="#lecture">Mini lecture</a>
-      <a class="nav-link" href="#transmission">Transmission snapshot</a>
+      <span class="nav-label en">Results</span>
+      <span class="nav-label fr">R&eacute;sultats</span>
+      <a class="nav-link" href="#summary"><span class="en">Simulation summary</span><span class="fr">R&eacute;sum&eacute; de la simulation</span></a>
+      <a class="nav-link" href="#methods"><span class="en">Methods</span><span class="fr">M&eacute;thodes</span></a>
+      <a class="nav-link" href="#lecture"><span class="en">Mini lecture</span><span class="fr">Mini-cours</span></a>
+      <a class="nav-link" href="#transmission"><span class="en">Transmission snapshot</span><span class="fr">Aper&ccedil;u de la transmission</span></a>
 
-      <span class="nav-label">More</span>
-      <a class="nav-link" href="#data-sources">Where the data comes from</a>
-      <a class="nav-link" href="#features">Key features</a>
-      <a class="nav-link" href="#gallery">Gallery</a>
+      <span class="nav-label en">More</span>
+      <span class="nav-label fr">Plus</span>
+      <a class="nav-link" href="#data-sources"><span class="en">Where the data comes from</span><span class="fr">Origine des donn&eacute;es</span></a>
+      <a class="nav-link" href="#features"><span class="en">Key features</span><span class="fr">Fonctionnalit&eacute;s cl&eacute;s</span></a>
+      <a class="nav-link" href="#gallery"><span class="en">Gallery</span><span class="fr">Galerie</span></a>
     </nav>
 
     <main class="main">
       <header class="hero">
-        <p class="eyebrow">Instrument Simulation Toolkit</p>
+        <p class="eyebrow">
+          <span class="en">Instrument Simulation Toolkit</span>
+          <span class="fr">Bo&icirc;te &agrave; outils de simulation d'instrument</span>
+        </p>
         <h1>VROOMM</h1>
-        <p class="subtitle">Night planning, physically motivated detector synthesis, and batch execution for spectrograph simulation workflows.</p>
+        <p class="subtitle">
+          <span class="en">Night planning, physically motivated detector synthesis, and batch execution for spectrograph simulation workflows.</span>
+          <span class="fr">Planification de nuit, synth&egrave;se physique du d&eacute;tecteur et ex&eacute;cution par lots pour les flux de travail de simulation de spectrographe.</span>
+        </p>
       </header>
 
       <div class="layout">
     <section id="organization" class="card span-3">
-      <h2>How The Project Is Organized</h2>
+      <h2><span class="en">How The Project Is Organized</span><span class="fr">Comment le projet est organis&eacute;</span></h2>
       <p class="hint">
-        Five plain-Python files cover the whole pipeline, from GUI to physics engine to this website.
-        Data flow: <strong>night_planner.py</strong> (build a night) &rarr; <strong>run_night.py</strong>
-        (walk the sequence) &rarr; <strong>simulate_detector.py</strong> (one physics run per exposure)
-        &rarr; FITS/PNG/JPG frames in <strong>night_output/</strong>.
+        <span class="en">
+          Five plain-Python files cover the whole pipeline, from GUI to physics engine to this website.
+          Data flow: <strong>night_planner.py</strong> (build a night) &rarr; <strong>run_night.py</strong>
+          (walk the sequence) &rarr; <strong>simulate_detector.py</strong> (one physics run per exposure)
+          &rarr; FITS/PNG/JPG frames in <strong>night_output/</strong>.
+        </span>
+        <span class="fr">
+          Cinq fichiers Python couvrent tout le pipeline, de l'interface graphique au moteur physique jusqu'&agrave; ce site.
+          Flux de donn&eacute;es&nbsp;: <strong>night_planner.py</strong> (construire une nuit) &rarr; <strong>run_night.py</strong>
+          (parcourir la s&eacute;quence) &rarr; <strong>simulate_detector.py</strong> (une ex&eacute;cution physique par pose)
+          &rarr; images FITS/PNG/JPG dans <strong>night_output/</strong>.
+        </span>
       </p>
       <ul class="feature-list">
-        <li><strong>night_planner.py</strong> &mdash; GUI entry point. Builds a night's observing sequence (calibrations + science targets), enriches targets via SIMBAD/Gaia DR3, and launches the runner.</li>
-        <li><strong>run_night.py</strong> &mdash; batch execution engine. Walks the planned sequence exposure by exposure, calls the physics engine for each one, and shows live progress.</li>
-        <li><strong>simulate_detector.py</strong> &mdash; the physics core. Turns a 1D spectrum into a 2D detector image via the PSF / trace-geometry / spline pipeline described below; also runnable standalone from the command line.</li>
-        <li><strong>simulate_params.yaml</strong> &mdash; central configuration for a single simulate_detector.py run: telescope, target, spectrum model, sky, telluric absorption, fiber setup.</li>
-        <li><strong>make_webpage_assets.py</strong> &mdash; builds this website: copies preview images, computes the stats below, and regenerates the mini-lecture figures.</li>
-        <li><strong>assets/</strong> &mdash; bundled and auto-fetched data (Zemax optical design, TAPAS telluric transmission, throughput curves, cached spectral models). See &ldquo;Where The Data Comes From&rdquo; below.</li>
+        <li class="en"><strong>night_planner.py</strong> &mdash; GUI entry point. Builds a night's observing sequence (calibrations + science targets), enriches targets via SIMBAD/Gaia DR3, and launches the runner.</li>
+        <li class="fr"><strong>night_planner.py</strong> &mdash; point d'entr&eacute;e de l'interface graphique. Construit la s&eacute;quence d'observation d'une nuit (calibrations + cibles scientifiques), enrichit les cibles via SIMBAD/Gaia DR3, et lance l'ex&eacute;cuteur.</li>
+        <li class="en"><strong>run_night.py</strong> &mdash; batch execution engine. Walks the planned sequence exposure by exposure, calls the physics engine for each one, and shows live progress.</li>
+        <li class="fr"><strong>run_night.py</strong> &mdash; moteur d'ex&eacute;cution par lots. Parcourt la s&eacute;quence planifi&eacute;e pose par pose, appelle le moteur physique pour chacune, et affiche la progression en direct.</li>
+        <li class="en"><strong>simulate_detector.py</strong> &mdash; the physics core. Turns a 1D spectrum into a 2D detector image via the PSF / trace-geometry / spline pipeline described below; also runnable standalone from the command line.</li>
+        <li class="fr"><strong>simulate_detector.py</strong> &mdash; le c&oelig;ur physique. Transforme un spectre 1D en image de d&eacute;tecteur 2D via le pipeline PSF / g&eacute;om&eacute;trie de trace / spline d&eacute;crit plus bas&nbsp;; peut aussi &ecirc;tre ex&eacute;cut&eacute; seul en ligne de commande.</li>
+        <li class="en"><strong>simulate_params.yaml</strong> &mdash; central configuration for a single simulate_detector.py run: telescope, target, spectrum model, sky, telluric absorption, fiber setup.</li>
+        <li class="fr"><strong>simulate_params.yaml</strong> &mdash; configuration centrale pour une ex&eacute;cution de simulate_detector.py&nbsp;: t&eacute;lescope, cible, mod&egrave;le spectral, ciel, absorption tellurique, configuration de fibre.</li>
+        <li class="en"><strong>make_webpage_assets.py</strong> &mdash; builds this website: copies preview images, computes the stats below, and regenerates the mini-lecture figures.</li>
+        <li class="fr"><strong>make_webpage_assets.py</strong> &mdash; construit ce site&nbsp;: copie les images d'aper&ccedil;u, calcule les statistiques ci-dessous, et r&eacute;g&eacute;n&egrave;re les figures du mini-cours.</li>
+        <li class="en"><strong>assets/</strong> &mdash; bundled and auto-fetched data (Zemax optical design, TAPAS telluric transmission, throughput curves, cached spectral models). See &ldquo;Where The Data Comes From&rdquo; below.</li>
+        <li class="fr"><strong>assets/</strong> &mdash; donn&eacute;es group&eacute;es et r&eacute;cup&eacute;r&eacute;es automatiquement (conception optique Zemax, transmission tellurique TAPAS, courbes de transmission, mod&egrave;les spectraux en cache). Voir &laquo;&nbsp;Origine des donn&eacute;es&nbsp;&raquo; plus bas.</li>
       </ul>
     </section>
 
     <section id="install" class="card span-2">
-    <h2>Local Installation</h2>
+    <h2><span class="en">Local Installation</span><span class="fr">Installation locale</span></h2>
       <div class="codeblock">
   git clone https://github.com/eartigau/vroommisator.git
   cd vroommisator
@@ -86,130 +143,222 @@
   pip install numpy scipy pyyaml matplotlib tqdm astropy astroquery barycorrpy pillow
       </div>
     <p class="hint">
-      Clone the repository, create an isolated virtual environment so these dependencies don't collide with
-      anything else on your system, activate it, then install the required packages. Everything else (Zemax
-      optical data, telluric transmission) is bundled in the repo as compressed archives and auto-extracts on
-      first run &mdash; no separate download step. Runs entirely locally with plain Python; no web backend required.
+      <span class="en">
+        Clone the repository, create an isolated virtual environment so these dependencies don't collide with
+        anything else on your system, activate it, then install the required packages. Everything else (Zemax
+        optical data, telluric transmission) is bundled in the repo as compressed archives and auto-extracts on
+        first run &mdash; no separate download step. Runs entirely locally with plain Python; no web backend required.
+      </span>
+      <span class="fr">
+        Clonez le d&eacute;p&ocirc;t, cr&eacute;ez un environnement virtuel isol&eacute; pour que ces d&eacute;pendances n'entrent pas en conflit
+        avec le reste de votre syst&egrave;me, activez-le, puis installez les paquets requis. Tout le reste (donn&eacute;es
+        optiques Zemax, transmission tellurique) est fourni dans le d&eacute;p&ocirc;t sous forme d'archives compress&eacute;es et
+        s'extrait automatiquement au premier lancement &mdash; aucun t&eacute;l&eacute;chargement s&eacute;par&eacute;. Fonctionne enti&egrave;rement en
+        local avec du Python pur&nbsp;; aucun serveur web requis.
+      </span>
     </p>
       </section>
 
       <section id="workflow" class="card">
-    <h2>Daily Workflow (In Practice)</h2>
+    <h2><span class="en">Daily Workflow (In Practice)</span><span class="fr">Utilisation quotidienne (en pratique)</span></h2>
     <div class="codeblock">
   python night_planner.py
     </div>
-    <p class="hint">The planner drives the observing sequence and launches the runner. This is the only command you normally need day-to-day.</p>
+    <p class="hint">
+      <span class="en">The planner drives the observing sequence and launches the runner. This is the only command you normally need day-to-day.</span>
+      <span class="fr">Le planificateur pilote la s&eacute;quence d'observation et lance l'ex&eacute;cuteur. C'est normalement la seule commande dont vous avez besoin au quotidien.</span>
+    </p>
     </section>
 
     <section id="planner-gui" class="card">
-      <h2>Planner GUI</h2>
+      <h2><span class="en">Planner GUI</span><span class="fr">Interface du planificateur</span></h2>
       <div class="image-frame">
         <img id="guiShot" src="assets/gui_screenshot.png" alt="Night planner screenshot" />
       </div>
       <p id="guiShotHint" class="hint">
-        night_planner.py's main window. Build the night's sequence with +Calibration/+Science/+Slew/+Delay,
-        reorder or delete steps, then Recompute BERV+AM before hitting Run Night. Each row tracks its own
-        RA/Dec, systemic RV, BERV, airmass, fiber routing, and status live as run_night.py executes it;
-        Export YAML saves the sequence to replay later.
+        <span class="en">
+          night_planner.py's main window. Build the night's sequence with +Calibration/+Science/+Slew/+Delay,
+          reorder or delete steps, then Recompute BERV+AM before hitting Run Night. Each row tracks its own
+          RA/Dec, systemic RV, BERV, airmass, fiber routing, and status live as run_night.py executes it;
+          Export YAML saves the sequence to replay later.
+        </span>
+        <span class="fr">
+          La fen&ecirc;tre principale de night_planner.py. Construisez la s&eacute;quence de la nuit avec
+          +Calibration/+Science/+Slew/+Delay, r&eacute;ordonnez ou supprimez des &eacute;tapes, puis Recompute BERV+AM avant
+          de lancer Run Night. Chaque ligne suit sa propre RA/Dec, RV syst&eacute;mique, BERV, masse d'air, routage de
+          fibre, et son statut en direct pendant l'ex&eacute;cution par run_night.py&nbsp;; Export YAML enregistre la
+          s&eacute;quence pour la rejouer plus tard.
+        </span>
       </p>
     </section>
 
     <section id="detector-preview" class="card">
-      <h2>Detector Preview</h2>
+      <h2><span class="en">Detector Preview</span><span class="fr">Aper&ccedil;u d&eacute;tecteur</span></h2>
       <div class="image-frame">
         <img id="detectorPreview" src="assets/detector_sim.png" alt="Detector preview" />
       </div>
-      <p class="hint">PNG preview is true 2x2 binned and scaled to 0..2xP90.</p>
+      <p class="hint">
+        <span class="en">PNG preview is true 2x2 binned and scaled to 0..2xP90.</span>
+        <span class="fr">L'aper&ccedil;u PNG est un vrai binning 2x2, mis &agrave; l'&eacute;chelle de 0 &agrave; 2&times;P90.</span>
+      </p>
     </section>
 
     <section id="color-preview" class="card">
-      <h2>Perceptual-Color Preview</h2>
+      <h2><span class="en">Perceptual-Color Preview</span><span class="fr">Aper&ccedil;u en couleurs perceptuelles</span></h2>
       <div class="image-frame">
         <img id="detectorColorPreview" src="assets/detector_sim.jpg" alt="Perceptual-color detector preview" />
       </div>
-      <p class="hint">Hue = wavelength (blue &rarr; red, following the eye's spectral response). Brightness = sqrt(flux), so faint orders stay visible next to bright ones.</p>
+      <p class="hint">
+        <span class="en">Hue = wavelength (blue &rarr; red, following the eye's spectral response). Brightness = sqrt(flux), so faint orders stay visible next to bright ones.</span>
+        <span class="fr">Teinte = longueur d'onde (bleu &rarr; rouge, selon la r&eacute;ponse spectrale de l'&oelig;il). Luminosit&eacute; = &radic;flux, pour que les ordres faibles restent visibles &agrave; c&ocirc;t&eacute; des plus brillants.</span>
+      </p>
     </section>
 
     <section id="summary" class="card span-2">
-      <h2>Simulation Summary</h2>
+      <h2><span class="en">Simulation Summary</span><span class="fr">R&eacute;sum&eacute; de la simulation</span></h2>
       <p id="statsIntro" class="hint"></p>
       <div id="statsGrid" class="stats-grid"></div>
     </section>
 
     <section id="methods" class="card span-2">
-      <h2>Methods</h2>
-      <p class="hint">Auto-extracted from simulate_params.yaml during asset generation.</p>
+      <h2><span class="en">Methods</span><span class="fr">M&eacute;thodes</span></h2>
+      <p class="hint">
+        <span class="en">Auto-extracted from simulate_params.yaml during asset generation.</span>
+        <span class="fr">Extrait automatiquement de simulate_params.yaml lors de la g&eacute;n&eacute;ration des ressources.</span>
+      </p>
       <div id="methodsGrid" class="stats-grid"></div>
     </section>
 
     <section id="lecture" class="card span-3">
-      <h2>Mini Lecture: How A 1D Spectrum Becomes A 2D Detector Image</h2>
+      <h2>
+        <span class="en">Mini Lecture: How A 1D Spectrum Becomes A 2D Detector Image</span>
+        <span class="fr">Mini-cours&nbsp;: comment un spectre 1D devient une image de d&eacute;tecteur 2D</span>
+      </h2>
       <div class="lecture">
-        <p>
+        <p class="en">
           This simulator does not draw arbitrary lines on an image. It starts with optical design products from Zemax,
           then propagates a calibrated spectrum through trace geometry and PSF deposition so every detector pixel receives
           physically motivated photon counts.
         </p>
-        <p>
+        <p class="fr">
+          Ce simulateur ne trace pas des lignes arbitraires sur une image. Il part des produits de conception optique
+          de Zemax, puis propage un spectre calibr&eacute; &agrave; travers la g&eacute;om&eacute;trie de trace et le d&eacute;p&ocirc;t de PSF, de sorte
+          que chaque pixel du d&eacute;tecteur re&ccedil;oive un nombre de photons physiquement motiv&eacute;.
+        </p>
+        <p class="en">
           The four figures below are generated automatically from your local data and are meant to be read in order.
           They illustrate the exact sequence used in the code path.
+        </p>
+        <p class="fr">
+          Les quatre figures ci-dessous sont g&eacute;n&eacute;r&eacute;es automatiquement &agrave; partir de vos donn&eacute;es locales et sont
+          pens&eacute;es pour &ecirc;tre lues dans l'ordre. Elles illustrent la s&eacute;quence exacte utilis&eacute;e dans le code.
         </p>
       </div>
       <div class="lecture-sections">
         <section class="lecture-section">
-          <h3>Step 1. Build Detector-Scale PSFs</h3>
-          <p>
+          <h3>
+            <span class="en">Step 1. Build Detector-Scale PSFs</span>
+            <span class="fr">&Eacute;tape 1. Construction des PSF &agrave; l'&eacute;chelle du d&eacute;tecteur</span>
+          </h3>
+          <p class="en">
             Input: Zemax PSF stamp (80x80 at 3 um sampling). Operation: true block binning to detector sampling
             (20x20 at 12 um), with flux conservation. Output: detector-scale PSF kernels ready for sub-pixel placement.
           </p>
+          <p class="fr">
+            Entr&eacute;e&nbsp;: vignette PSF Zemax (80&times;80 &agrave; 3&nbsp;&micro;m d'&eacute;chantillonnage). Op&eacute;ration&nbsp;: vrai binning par
+            blocs vers l'&eacute;chantillonnage du d&eacute;tecteur (20&times;20 &agrave; 12&nbsp;&micro;m), avec conservation du flux. Sortie&nbsp;:
+            noyaux PSF &agrave; l'&eacute;chelle du d&eacute;tecteur, pr&ecirc;ts pour un placement sous-pixel.
+          </p>
           <figure class="lecture-figure">
             <img src="assets/lecture_psf_construction.png" alt="PSF construction" />
-            <figcaption>
+            <figcaption class="en">
               Legend: Left panel shows original high-resolution Zemax PSF stamps. Right panel shows detector-scale PSFs
               after 4x4 block binning with conserved flux.
             </figcaption>
+            <figcaption class="fr">
+              L&eacute;gende&nbsp;: le panneau de gauche montre les vignettes PSF Zemax originales &agrave; haute r&eacute;solution. Le
+              panneau de droite montre les PSF &agrave; l'&eacute;chelle du d&eacute;tecteur apr&egrave;s un binning par blocs 4&times;4 &agrave; flux
+              conserv&eacute;.
+            </figcaption>
           </figure>
         </section>
 
         <section class="lecture-section">
-          <h3>Step 2. Trace Geometry From XY Maps</h3>
-          <p>
+          <h3>
+            <span class="en">Step 2. Trace Geometry From XY Maps</span>
+            <span class="fr">&Eacute;tape 2. G&eacute;om&eacute;trie de trace &agrave; partir des cartes XY</span>
+          </h3>
+          <p class="en">
             Input: per-order wavelength-position map from the Zemax XY table. Operation: convert mm to detector pixels
             and construct order centerlines. Output: wavelength-tagged trajectories for each order on detector coordinates.
           </p>
+          <p class="fr">
+            Entr&eacute;e&nbsp;: carte longueur d'onde-position par ordre, issue de la table XY de Zemax. Op&eacute;ration&nbsp;:
+            conversion des mm en pixels du d&eacute;tecteur et construction des lignes centrales de chaque ordre. Sortie&nbsp;:
+            trajectoires &eacute;tiquet&eacute;es en longueur d'onde pour chaque ordre, en coordonn&eacute;es du d&eacute;tecteur.
+          </p>
           <figure class="lecture-figure">
             <img src="assets/lecture_trace_map.png" alt="Trace geometry" />
-            <figcaption>
+            <figcaption class="en">
               Legend: Curves trace echelle orders across detector space. Color progression follows wavelength along each order.
+            </figcaption>
+            <figcaption class="fr">
+              L&eacute;gende&nbsp;: les courbes tracent les ordres &eacute;chelle &agrave; travers l'espace du d&eacute;tecteur. La progression
+              des couleurs suit la longueur d'onde le long de chaque ordre.
             </figcaption>
           </figure>
         </section>
 
         <section class="lecture-section">
-          <h3>Step 3. Spline Interpolation Along The Trace</h3>
-          <p>
+          <h3>
+            <span class="en">Step 3. Spline Interpolation Along The Trace</span>
+            <span class="fr">&Eacute;tape 3. Interpolation par spline le long de la trace</span>
+          </h3>
+          <p class="en">
             Input: sparse optical-design samples. Operation: fit cubic splines x(lambda) and y(lambda), then sample at the
             simulation wavelength step. Output: smooth wavelength to sub-pixel detector mapping.
           </p>
+          <p class="fr">
+            Entr&eacute;e&nbsp;: &eacute;chantillons &eacute;pars issus de la conception optique. Op&eacute;ration&nbsp;: ajustement de splines
+            cubiques x(&lambda;) et y(&lambda;), puis &eacute;chantillonnage au pas de longueur d'onde de la simulation. Sortie&nbsp;:
+            correspondance lisse entre longueur d'onde et position sous-pixel sur le d&eacute;tecteur.
+          </p>
           <figure class="lecture-figure">
             <img src="assets/lecture_spline_sampling.png" alt="Spline interpolation" />
-            <figcaption>
+            <figcaption class="en">
               Legend: Points are original trace samples; lines are cubic-spline interpolants used to map each wavelength bin
               to detector coordinates.
+            </figcaption>
+            <figcaption class="fr">
+              L&eacute;gende&nbsp;: les points sont les &eacute;chantillons de trace originaux&nbsp;; les lignes sont les interpolants
+              par spline cubique utilis&eacute;s pour associer chaque intervalle de longueur d'onde &agrave; des coordonn&eacute;es
+              du d&eacute;tecteur.
             </figcaption>
           </figure>
         </section>
 
         <section class="lecture-section">
-          <h3>Step 4. Photon-Conserving 2D Stamp Accumulation</h3>
-          <p>
+          <h3>
+            <span class="en">Step 4. Photon-Conserving 2D Stamp Accumulation</span>
+            <span class="fr">&Eacute;tape 4. Accumulation 2D des vignettes &agrave; photons conserv&eacute;s</span>
+          </h3>
+          <p class="en">
             Input: sampled spectral flux, interpolated coordinates, and detector-scale PSF kernels. Operation: shift and add
             PSF stamps at each wavelength coordinate. Output: final detector frame in photons per pixel.
           </p>
+          <p class="fr">
+            Entr&eacute;e&nbsp;: flux spectral &eacute;chantillonn&eacute;, coordonn&eacute;es interpol&eacute;es, et noyaux PSF &agrave; l'&eacute;chelle du
+            d&eacute;tecteur. Op&eacute;ration&nbsp;: d&eacute;calage et addition des vignettes PSF &agrave; chaque coordonn&eacute;e de longueur
+            d'onde. Sortie&nbsp;: image finale du d&eacute;tecteur, en photons par pixel.
+          </p>
           <figure class="lecture-figure">
             <img src="assets/lecture_image_assembly.png" alt="2D image assembly" />
-            <figcaption>
+            <figcaption class="en">
               Legend: Final image after accumulation of all wavelength bins and orders; each pixel stores integrated photon counts.
+            </figcaption>
+            <figcaption class="fr">
+              L&eacute;gende&nbsp;: image finale apr&egrave;s accumulation de tous les intervalles de longueur d'onde et de tous les
+              ordres&nbsp;; chaque pixel stocke un nombre de photons int&eacute;gr&eacute;.
             </figcaption>
           </figure>
         </section>
@@ -217,45 +366,58 @@
     </section>
 
     <section id="transmission" class="card">
-      <h2>Transmission Snapshot</h2>
+      <h2><span class="en">Transmission Snapshot</span><span class="fr">Aper&ccedil;u de la transmission</span></h2>
       <div id="transmissionSummary" class="stats-grid"></div>
     </section>
 
     <section id="data-sources" class="card span-2">
-      <h2>Where The Data Comes From</h2>
-      <p class="hint">Everything below is fetched or bundled automatically &mdash; no manual downloads needed to run the simulator.</p>
+      <h2><span class="en">Where The Data Comes From</span><span class="fr">Origine des donn&eacute;es</span></h2>
+      <p class="hint">
+        <span class="en">Everything below is fetched or bundled automatically &mdash; no manual downloads needed to run the simulator.</span>
+        <span class="fr">Tout ce qui suit est r&eacute;cup&eacute;r&eacute; ou fourni automatiquement&nbsp;: aucun t&eacute;l&eacute;chargement manuel n'est n&eacute;cessaire pour ex&eacute;cuter le simulateur.</span>
+      </p>
       <ul class="feature-list">
-        <li><strong>Zemax optical design</strong> (PSF stamps + order XY maps): bundled in the repo as compressed archives, auto-extracted on first run.</li>
-        <li><strong>BT-Settl CIFIST synthetic spectra</strong>: nearest grid point to the requested Teff/logg fetched live from the SVO theoretical spectra service and cached locally.</li>
-        <li><strong>TAPAS telluric transmission</strong> (per-species H2O/CO2/CH4/O2/O3/N2O/NO2): bundled compressed FITS, auto-extracted on first run.</li>
-        <li><strong>Gaia DR3 / SIMBAD</strong>: queried live for target astrometry, parallax, and photometry during night planning.</li>
-        <li><strong>Sky OH airglow &amp; arc lamp lines</strong>: fetched from ExoMol MoLLIST-OH and NIST ASD, then cached as local line lists.</li>
+        <li class="en"><strong>Zemax optical design</strong> (PSF stamps + order XY maps): bundled in the repo as compressed archives, auto-extracted on first run.</li>
+        <li class="fr"><strong>Conception optique Zemax</strong> (vignettes PSF + cartes XY des ordres)&nbsp;: fournie dans le d&eacute;p&ocirc;t sous forme d'archives compress&eacute;es, extraites automatiquement au premier lancement.</li>
+        <li class="en"><strong>BT-Settl CIFIST synthetic spectra</strong>: nearest grid point to the requested Teff/logg fetched live from the SVO theoretical spectra service and cached locally.</li>
+        <li class="fr"><strong>Spectres synth&eacute;tiques BT-Settl CIFIST</strong>&nbsp;: le point de grille le plus proche du Teff/logg demand&eacute; est r&eacute;cup&eacute;r&eacute; en direct depuis le service de spectres th&eacute;oriques SVO et mis en cache localement.</li>
+        <li class="en"><strong>TAPAS telluric transmission</strong> (per-species H2O/CO2/CH4/O2/O3/N2O/NO2): bundled compressed FITS, auto-extracted on first run.</li>
+        <li class="fr"><strong>Transmission tellurique TAPAS</strong> (par esp&egrave;ce H2O/CO2/CH4/O2/O3/N2O/NO2)&nbsp;: fichier FITS compress&eacute; fourni, extrait automatiquement au premier lancement.</li>
+        <li class="en"><strong>Gaia DR3 / SIMBAD</strong>: queried live for target astrometry, parallax, and photometry during night planning.</li>
+        <li class="fr"><strong>Gaia DR3 / SIMBAD</strong>&nbsp;: interrog&eacute;s en direct pour l'astrom&eacute;trie, la parallaxe et la photom&eacute;trie des cibles lors de la planification de nuit.</li>
+        <li class="en"><strong>Sky OH airglow &amp; arc lamp lines</strong>: fetched from ExoMol MoLLIST-OH and NIST ASD, then cached as local line lists.</li>
+        <li class="fr"><strong>Raies d'&eacute;mission du ciel (OH) et de lampe &agrave; arc</strong>&nbsp;: r&eacute;cup&eacute;r&eacute;es depuis ExoMol MoLLIST-OH et NIST ASD, puis mises en cache sous forme de listes de raies locales.</li>
       </ul>
     </section>
 
     <section id="features" class="card">
-      <h2>Key Features</h2>
+      <h2><span class="en">Key Features</span><span class="fr">Fonctionnalit&eacute;s cl&eacute;s</span></h2>
       <ul class="feature-list">
-        <li>Science fiber routing with simultaneous sky in both fibers.</li>
-        <li>Wavelength-dependent throughput and adaptive spectral sampling.</li>
-        <li>SIMBAD plus Gaia DR3 target enrichment with per-target overrides.</li>
-        <li>Planner-to-runner pipeline with status-aware execution.</li>
+        <li class="en">Science fiber routing with simultaneous sky in both fibers.</li>
+        <li class="fr">Routage de la fibre scientifique avec ciel simultan&eacute; dans les deux fibres.</li>
+        <li class="en">Wavelength-dependent throughput and adaptive spectral sampling.</li>
+        <li class="fr">Rendement d&eacute;pendant de la longueur d'onde et &eacute;chantillonnage spectral adaptatif.</li>
+        <li class="en">SIMBAD plus Gaia DR3 target enrichment with per-target overrides.</li>
+        <li class="fr">Enrichissement des cibles via SIMBAD et Gaia DR3, avec surcharges par cible.</li>
+        <li class="en">Planner-to-runner pipeline with status-aware execution.</li>
+        <li class="fr">Pipeline planificateur-ex&eacute;cuteur avec suivi d'&eacute;tat de l'ex&eacute;cution.</li>
       </ul>
     </section>
 
     <section id="gallery" class="card span-2">
-      <h2>Generated Detector Gallery</h2>
+      <h2><span class="en">Generated Detector Gallery</span><span class="fr">Galerie de d&eacute;tecteurs g&eacute;n&eacute;r&eacute;s</span></h2>
       <div id="galleryGrid" class="gallery-grid"></div>
     </section>
       </div>
 
       <footer class="footer">
         <p>
-          <a href="https://github.com/eartigau/vroommisator" target="_blank">Source on GitHub</a>
+          <a href="https://github.com/eartigau/vroommisator" target="_blank"><span class="en">Source on GitHub</span><span class="fr">Code source sur GitHub</span></a>
           &middot;
-          <a href="https://eartigau.github.io/" target="_blank">More tools</a>
+          <a href="https://eartigau.github.io/#outils" target="_blank"><span class="en">More tools</span><span class="fr">Plus d'outils</span></a>
           &middot;
-          Generated for the VROOMM simulator workspace.
+          <span class="en">Generated for the VROOMM simulator workspace.</span>
+          <span class="fr">G&eacute;n&eacute;r&eacute; pour l'espace de travail du simulateur VROOMM.</span>
         </p>
       </footer>
     </main>
