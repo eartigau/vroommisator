@@ -13,27 +13,50 @@
   <div class="bg-orb orb-a"></div>
   <div class="bg-orb orb-b"></div>
 
-  <div class="site-banner">
-    <div class="site-banner-inner">
-      <div class="site-logo-chip">
-        <img src="assets/vroomm_logo.png" alt="VROOMM logo" />
-      </div>
-      <div class="site-banner-text">
-        <h2>VROOMM Simulator</h2>
-        <p>Night planning &amp; physically motivated 2D detector synthesis &middot; OMM 1.6-m telescope</p>
-      </div>
-      <a href="https://eartigau.github.io/" class="home-link">&larr; Home</a>
-    </div>
+  <div class="topbar">
+    <a href="https://github.com/eartigau/vroommisator" class="home-link" target="_blank">GitHub</a>
+    <a href="https://eartigau.github.io/" class="home-link">&larr; Home</a>
   </div>
 
-  <header class="hero">
-    <p class="eyebrow">Instrument Simulation Toolkit</p>
-    <h1>VROOMM</h1>
-    <p class="subtitle">Night planning, physically motivated detector synthesis, and batch execution for spectrograph simulation workflows.</p>
-  </header>
+  <div class="shell">
+    <nav class="sidebar" aria-label="Page navigation">
+      <div class="sidebar-logo">
+        <img src="assets/vroomm_logo.png" alt="VROOMM logo" />
+        <span>VROOMM Simulator</span>
+      </div>
+      <div class="sidebar-sub">Night planning &amp; 2D detector synthesis &middot; OMM 1.6-m</div>
 
-  <main class="layout">
-    <section class="card span-3">
+      <span class="nav-label">Overview</span>
+      <a class="nav-link" href="#organization">How it's organized</a>
+      <a class="nav-link" href="#install">Local installation</a>
+      <a class="nav-link" href="#workflow">Daily workflow</a>
+
+      <span class="nav-label">Preview</span>
+      <a class="nav-link" href="#planner-gui">Planner GUI</a>
+      <a class="nav-link" href="#detector-preview">Detector preview</a>
+      <a class="nav-link" href="#color-preview">Perceptual-color preview</a>
+
+      <span class="nav-label">Results</span>
+      <a class="nav-link" href="#summary">Simulation summary</a>
+      <a class="nav-link" href="#methods">Methods</a>
+      <a class="nav-link" href="#lecture">Mini lecture</a>
+      <a class="nav-link" href="#transmission">Transmission snapshot</a>
+
+      <span class="nav-label">More</span>
+      <a class="nav-link" href="#data-sources">Where the data comes from</a>
+      <a class="nav-link" href="#features">Key features</a>
+      <a class="nav-link" href="#gallery">Gallery</a>
+    </nav>
+
+    <main class="main">
+      <header class="hero">
+        <p class="eyebrow">Instrument Simulation Toolkit</p>
+        <h1>VROOMM</h1>
+        <p class="subtitle">Night planning, physically motivated detector synthesis, and batch execution for spectrograph simulation workflows.</p>
+      </header>
+
+      <div class="layout">
+    <section id="organization" class="card span-3">
       <h2>How The Project Is Organized</h2>
       <p class="hint">
         Five plain-Python files cover the whole pipeline, from GUI to physics engine to this website.
@@ -51,7 +74,7 @@
       </ul>
     </section>
 
-    <section class="card span-2">
+    <section id="install" class="card span-2">
     <h2>Local Installation</h2>
       <div class="codeblock">
   git clone https://github.com/eartigau/vroommisator.git
@@ -70,7 +93,7 @@
     </p>
       </section>
 
-      <section class="card">
+      <section id="workflow" class="card">
     <h2>Daily Workflow (In Practice)</h2>
     <div class="codeblock">
   python night_planner.py
@@ -78,7 +101,7 @@
     <p class="hint">The planner drives the observing sequence and launches the runner. This is the only command you normally need day-to-day.</p>
     </section>
 
-    <section class="card">
+    <section id="planner-gui" class="card">
       <h2>Planner GUI</h2>
       <div class="image-frame">
         <img id="guiShot" src="assets/gui_screenshot.png" alt="Night planner screenshot" />
@@ -91,7 +114,7 @@
       </p>
     </section>
 
-    <section class="card">
+    <section id="detector-preview" class="card">
       <h2>Detector Preview</h2>
       <div class="image-frame">
         <img id="detectorPreview" src="assets/detector_sim.png" alt="Detector preview" />
@@ -99,7 +122,7 @@
       <p class="hint">PNG preview is true 2x2 binned and scaled to 0..2xP90.</p>
     </section>
 
-    <section class="card">
+    <section id="color-preview" class="card">
       <h2>Perceptual-Color Preview</h2>
       <div class="image-frame">
         <img id="detectorColorPreview" src="assets/detector_sim.jpg" alt="Perceptual-color detector preview" />
@@ -107,19 +130,19 @@
       <p class="hint">Hue = wavelength (blue &rarr; red, following the eye's spectral response). Brightness = sqrt(flux), so faint orders stay visible next to bright ones.</p>
     </section>
 
-    <section class="card span-2">
+    <section id="summary" class="card span-2">
       <h2>Simulation Summary</h2>
       <p id="statsIntro" class="hint"></p>
       <div id="statsGrid" class="stats-grid"></div>
     </section>
 
-    <section class="card span-2">
+    <section id="methods" class="card span-2">
       <h2>Methods</h2>
       <p class="hint">Auto-extracted from simulate_params.yaml during asset generation.</p>
       <div id="methodsGrid" class="stats-grid"></div>
     </section>
 
-    <section class="card span-3">
+    <section id="lecture" class="card span-3">
       <h2>Mini Lecture: How A 1D Spectrum Becomes A 2D Detector Image</h2>
       <div class="lecture">
         <p>
@@ -193,12 +216,12 @@
       </div>
     </section>
 
-    <section class="card">
+    <section id="transmission" class="card">
       <h2>Transmission Snapshot</h2>
       <div id="transmissionSummary" class="stats-grid"></div>
     </section>
 
-    <section class="card span-2">
+    <section id="data-sources" class="card span-2">
       <h2>Where The Data Comes From</h2>
       <p class="hint">Everything below is fetched or bundled automatically &mdash; no manual downloads needed to run the simulator.</p>
       <ul class="feature-list">
@@ -210,7 +233,7 @@
       </ul>
     </section>
 
-    <section class="card">
+    <section id="features" class="card">
       <h2>Key Features</h2>
       <ul class="feature-list">
         <li>Science fiber routing with simultaneous sky in both fibers.</li>
@@ -220,21 +243,23 @@
       </ul>
     </section>
 
-    <section class="card span-2">
+    <section id="gallery" class="card span-2">
       <h2>Generated Detector Gallery</h2>
       <div id="galleryGrid" class="gallery-grid"></div>
     </section>
-  </main>
+      </div>
 
-  <footer class="footer">
-    <p>
-      <a href="https://github.com/eartigau/vroommisator" target="_blank">Source on GitHub</a>
-      &middot;
-      <a href="https://eartigau.github.io/" target="_blank">More tools</a>
-      &middot;
-      Generated for the VROOMM simulator workspace.
-    </p>
-  </footer>
+      <footer class="footer">
+        <p>
+          <a href="https://github.com/eartigau/vroommisator" target="_blank">Source on GitHub</a>
+          &middot;
+          <a href="https://eartigau.github.io/" target="_blank">More tools</a>
+          &middot;
+          Generated for the VROOMM simulator workspace.
+        </p>
+      </footer>
+    </main>
+  </div>
 
   <div id="lightbox" class="lightbox" hidden>
     <button id="lightboxClose" class="lightbox-close" aria-label="Close" type="button">&times;</button>
