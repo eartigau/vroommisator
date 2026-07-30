@@ -114,25 +114,25 @@ window.VROOMM_MANIFEST = {
       "title": "PSF construction",
       "dest": "docs/assets/lecture_psf_construction.png",
       "web_path": "assets/lecture_psf_construction.png",
-      "bytes": 47784
+      "bytes": 45295
     },
     {
       "title": "Trace geometry",
       "dest": "docs/assets/lecture_trace_map.png",
       "web_path": "assets/lecture_trace_map.png",
-      "bytes": 91003
+      "bytes": 91478
     },
     {
       "title": "Spline interpolation",
       "dest": "docs/assets/lecture_spline_sampling.png",
       "web_path": "assets/lecture_spline_sampling.png",
-      "bytes": 92400
+      "bytes": 79501
     },
     {
       "title": "2D image assembly",
       "dest": "docs/assets/lecture_image_assembly.png",
       "web_path": "assets/lecture_image_assembly.png",
-      "bytes": 132983
+      "bytes": 120118
     }
   ],
   "detector_stats": {
@@ -141,7 +141,7 @@ window.VROOMM_MANIFEST = {
         4096,
         4096
       ],
-      "sum": 3073145262328.4536,
+      "sum": 3073145262328.449,
       "max": 1747691.125,
       "p50": 21906.501953125,
       "p90": 1022911.2687500005,

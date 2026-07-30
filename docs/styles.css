@@ -18,6 +18,14 @@ a {
   text-decoration: none;
 }
 
+html.lang-en .fr { display: none; }
+html.lang-fr .en { display: none; }
+
+#langBtn {
+  cursor: pointer;
+  font-family: inherit;
+}
+
 a:hover {
   text-decoration: underline;
 }
