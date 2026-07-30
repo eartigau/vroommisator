@@ -6,6 +6,7 @@
   --muted: #a8b4ca;
   --accent: #62c2ff;
   --line: rgba(200, 220, 255, 0.16);
+  --topbar-h: 49px;
 }
 
 * {
@@ -55,80 +56,123 @@ body {
   bottom: -140px;
 }
 
-.site-banner {
-  background: linear-gradient(135deg, #0d1a2e 0%, #1c3a5e 100%);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-  position: relative;
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  height: var(--topbar-h);
+  padding: 0 20px;
+  background: rgba(8, 17, 31, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
 }
 
-.site-banner-inner {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 14px 20px;
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - var(--topbar-h));
+}
+
+.sidebar {
+  position: sticky;
+  top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
+  overflow-y: auto;
+  background: rgba(8, 17, 31, 0.55);
+  border-right: 1px solid var(--line);
+  padding: 1.75rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
 }
 
-.site-logo-chip {
-  background: #fff;
-  border-radius: 8px;
-  padding: 4px 8px;
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-}
-
-.site-logo-chip img {
-  height: 32px;
+.sidebar-logo img {
+  height: 26px;
   width: auto;
   display: block;
+  background: #fff;
+  border-radius: 6px;
+  padding: 3px 6px;
 }
 
-.site-banner-text {
-  flex: 1;
-  min-width: 0;
+.sidebar-logo span {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
 }
 
-.site-banner-text h2 {
-  margin: 0;
-  font-size: 1.05rem;
-  color: #fff;
-}
-
-.site-banner-text p {
-  margin: 2px 0 0;
-  font-size: 0.78rem;
-  color: rgba(232, 238, 248, 0.7);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.sidebar-sub {
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
+  line-height: 1.4;
 }
 
 .home-link {
   display: inline-block;
-  flex-shrink: 0;
+  width: fit-content;
   font-size: 0.78rem;
   font-weight: 700;
-  color: rgba(232, 238, 248, 0.85);
+  color: var(--muted);
   text-decoration: none;
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(232, 238, 248, 0.25);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .home-link:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--accent);
+  border-color: rgba(98, 194, 255, 0.4);
   text-decoration: none;
 }
 
-.hero {
-  max-width: 1180px;
+.nav-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 0.9rem 0 0.35rem;
+}
+
+.nav-link {
+  display: block;
+  font-size: 0.83rem;
+  color: var(--muted);
+  padding: 0.28rem 0.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.main {
+  min-width: 0;
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 44px 20px 22px;
+}
+
+.hero {
+  padding: 2.5rem 20px 22px;
 }
 
 .eyebrow {
@@ -154,8 +198,6 @@ h1 {
 }
 
 .layout {
-  max-width: 1180px;
-  margin: 0 auto;
   padding: 8px 20px 28px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -423,8 +465,6 @@ img {
 }
 
 .footer {
-  max-width: 1180px;
-  margin: 0 auto;
   padding: 6px 20px 24px;
   color: var(--muted);
   font-size: 0.82rem;
@@ -444,7 +484,15 @@ img {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 760px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
   .layout {
     grid-template-columns: 1fr;
   }
@@ -467,9 +515,5 @@ img {
 
   .lecture-figure img {
     width: 100%;
-  }
-
-  .site-banner-text p {
-    display: none;
   }
 }
